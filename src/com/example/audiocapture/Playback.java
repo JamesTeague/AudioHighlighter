@@ -17,7 +17,7 @@ public class Playback extends Activity {
 	String fileName;
 	private ArrayList<Integer> FlagRelTimes;
 	MediaPlayer m;
-	private Button play;
+	private Button play,flag1,flag2,flag3;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -26,9 +26,26 @@ public class Playback extends Activity {
 		Bundle b = new Bundle();
 		b=getIntent().getExtras();
 		play = (Button)findViewById(R.id.button3);
+		flag1 = (Button)findViewById(R.id.flag1);
+		flag2 = (Button)findViewById(R.id.flag2);
+		flag3 = (Button)findViewById(R.id.flag3);
 		fileName = b.getString("fileName");
 		FlagRelTimes = b.getIntegerArrayList("myArray");
 		Log.v("Time Elements", fileName);
+		//Disable Non-existent flags
+		if(FlagRelTimes.size() == 0){
+			Log.v("Time Elements", "FlagRelTimes is null");
+			flag1.setEnabled(false);
+			flag2.setEnabled(false);
+			flag3.setEnabled(false);
+		}
+		else if(FlagRelTimes.size() == 1){
+			flag2.setEnabled(false);
+			flag3.setEnabled(false);
+		}
+		else if(FlagRelTimes.size() == 2){
+			flag3.setEnabled(false);
+		}
 	}
 
 	@Override
