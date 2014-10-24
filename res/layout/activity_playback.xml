@@ -8,44 +8,4 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.audiocapture.Playback" >
 
-    <TextView
-        android:id="@+id/tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Playback Page" />
-    
-    <Button
-      android:id="@+id/button3"
-      style="?android:attr/buttonStyleSmall"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/tv"
-      android:layout_centerHorizontal="true"
-      android:onClick="play"
-      android:text="@string/play" />
-    <Button
-      android:id="@+id/flag1"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/button3"
-      android:layout_marginTop="67dp"
-      android:onClick="flag1"
-      android:text="Flag 1" />
-   <Button
-      android:id="@+id/flag2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/flag1"
-      android:layout_marginTop="67dp"
-      android:onClick="flag2"
-      android:text="Flag 2" />
-   <Button
-      android:id="@+id/flag3"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/flag2"
-      android:layout_marginTop="67dp"
-      android:onClick="flag3"
-      android:text="Flag 3" />
-
 </RelativeLayout>
