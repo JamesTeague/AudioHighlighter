@@ -1,0 +1,86 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  Internal Error (classFileParser.cpp:3470), pid=5424, tid=5268
+#  Error: ShouldNotReachHere()
+#
+# JRE version: 7.0-b147
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (21.0-b17 mixed mode windows-amd64 compressed oops)
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000000001d9c800):  JavaThread "Unknown thread" [_thread_in_vm, id=5268, stack(0x0000000001de0000,0x0000000001ee0000)]
+
+Stack: [0x0000000001de0000,0x0000000001ee0000]
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+
+Other Threads:
+
+=>0x0000000001d9c800 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=5268, stack(0x0000000001de0000,0x0000000001ee0000)]
+
+VM state:not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Dynamic libraries:
+0x000007f71bd50000 - 0x000007f71bd83000 	C:\Program Files\Java\jre7\bin\javaw.exe
+0x000007fb02560000 - 0x000007fb0271e000 	C:\Windows\SYSTEM32\ntdll.dll
+0x000007fb02320000 - 0x000007fb02457000 	C:\Windows\system32\KERNEL32.DLL
+0x000007faff510000 - 0x000007faff604000 	C:\Windows\system32\KERNELBASE.dll
+0x000007faff9e0000 - 0x000007faffabe000 	C:\Windows\system32\ADVAPI32.dll
+0x000007fb00540000 - 0x000007fb0068c000 	C:\Windows\system32\USER32.dll
+0x000007fafd6d0000 - 0x000007fafd93a000 	C:\Windows\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.9200.16579_none_418ab7ef718b27ef\COMCTL32.dll
+0x000007faffb30000 - 0x000007faffbd5000 	C:\Windows\system32\msvcrt.dll
+0x000007faff990000 - 0x000007faff9d8000 	C:\Windows\SYSTEM32\sechost.dll
+0x000007faffe30000 - 0x000007fafff75000 	C:\Windows\system32\RPCRT4.dll
+0x000007faffc80000 - 0x000007faffdc1000 	C:\Windows\system32\GDI32.dll
+0x000007faff950000 - 0x000007faff989000 	C:\Windows\system32\IMM32.DLL
+0x000007fb01f70000 - 0x000007fb02086000 	C:\Windows\system32\MSCTF.dll
+0x0000000073b60000 - 0x0000000073c31000 	C:\Program Files\Java\jre7\bin\msvcr100.dll
+0x0000000071da0000 - 0x000000007246e000 	C:\Program Files\Java\jre7\bin\server\jvm.dll
+0x000007faf8ee0000 - 0x000007faf8ee9000 	C:\Windows\SYSTEM32\WSOCK32.dll
+0x000007faf86f0000 - 0x000007faf8710000 	C:\Windows\SYSTEM32\WINMM.dll
+0x000007fb02460000 - 0x000007fb02467000 	C:\Windows\system32\PSAPI.DLL
+0x000007fb02090000 - 0x000007fb020e8000 	C:\Windows\system32\WS2_32.dll
+0x000007faf86b0000 - 0x000007faf86e3000 	C:\Windows\SYSTEM32\WINMMBASE.dll
+0x000007fb00910000 - 0x000007fb00919000 	C:\Windows\system32\NSI.dll
+0x000007faff8c0000 - 0x000007faff90f000 	C:\Windows\SYSTEM32\cfgmgr32.dll
+0x000007faff910000 - 0x000007faff932000 	C:\Windows\system32\DEVOBJ.dll
+0x0000000073b50000 - 0x0000000073b5f000 	C:\Program Files\Java\jre7\bin\verify.dll
+0x0000000073b20000 - 0x0000000073b48000 	C:\Program Files\Java\jre7\bin\java.dll
+0x0000000073b00000 - 0x0000000073b15000 	C:\Program Files\Java\jre7\bin\zip.dll
+
+VM Arguments:
+jvm_args: -Dfile.encoding=Cp1252 -Xbootclasspath:C:\Users\Kian\Downloads\eclipse-standard-luna-R-win32-x86_64\eclipse\platforms\android-19\android.jar 
+java_command: MainActivity
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+PATH=C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Windows Live\Shared;C:\Program Files (x86)\Intel\OpenCL SDK\2.0\bin\x86;C:\Program Files (x86)\Intel\OpenCL SDK\2.0\bin\x64;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\Microsoft SDKs\TypeScript\
+USERNAME=Kian
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 58 Stepping 9, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows NT 6.2 Build 9200 
+
+CPU:total 4 (2 cores per cpu, 2 threads per core) family 6 model 58 stepping 9, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, ht
+
+Memory: 4k page, physical 4077208k(1106008k free), swap 8271512k(3343324k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (21.0-b17) for windows-amd64 JRE (1.7.0-b147), built on Jun 27 2011 02:19:45 by "java_re" with unknown MS VC++:1600
+
+time: Fri Oct 17 00:45:15 2014
+elapsed time: 0 seconds
+

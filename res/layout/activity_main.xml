@@ -67,6 +67,16 @@
        android:layout_alignBottom="@+id/flagButton"
        android:text="Next Page"
        android:onClick="goToPlayback" />
-   
+
+    <Chronometer
+        android:id="@+id/chronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/button1"
+        android:layout_marginBottom="44dp"
+        android:layout_marginRight="24dp"
+        android:textSize="50sp"
+        android:text="Chronometer" />
 
 </RelativeLayout>
