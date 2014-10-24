@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
@@ -39,6 +41,9 @@ public class Playback extends Activity {
 	BufferedWriter bw;
 	private Button pause_resume;
 	private ShareActionProvider mShareActionProvider;
+	private SeekBar seekBar;
+	private Handler mHandler;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,12 +80,19 @@ public class Playback extends Activity {
 		//setContentView(linLayout, linLayoutParam);
 		setContentView(sv);
 		sv.addView(linLayout);
+		mHandler = new Handler();
+		seekBar = new SeekBar(this);
+		seekBar.setMax(m.getDuration());
+		int x = m.getDuration() - m.getDuration();
+		seekBar.setProgress(x);
+		mHandler.postDelayed(run, 1000);
 		Button play = new Button(this);
 		Button flag = new Button(this);
 		pause_resume = new Button(this);
 		play.setText("Play");
 		flag.setText("Flag");
 		pause_resume.setText("Pause");
+		linLayout.addView(seekBar);
 		linLayout.addView(flag);
 		linLayout.addView(play);
 		linLayout.addView(pause_resume);
@@ -94,6 +106,8 @@ public class Playback extends Activity {
 				FlagRelTimes.add(m.getCurrentPosition());
 				try {
 					loadActivity();
+					pause_resume.setEnabled(true);
+					pause_resume.setText("Pause");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -221,6 +235,7 @@ public class Playback extends Activity {
 						}
 
 					}
+					seekBar.setProgress(id_);
 					try {
 						m.prepare();
 					} catch (IllegalStateException e) {
@@ -320,6 +335,7 @@ public class Playback extends Activity {
 		}else{
 			m.setDataSource(filename);
 		}
+		seekBar.setProgress(0);
 		m.prepare();
 		m.start();
 		m.seekTo(0);
@@ -343,7 +359,7 @@ public class Playback extends Activity {
 		else if (buttonText == "Resume"){
 			int mCurrentPosition= m.getCurrentPosition();
 
-			//			seekBar.setProgress(mCurrentPosition);
+			seekBar.setProgress(mCurrentPosition);
 			m.start();
 			m.seekTo(mCurrentPosition);
 			pause_resume.setText("Pause");
@@ -351,4 +367,34 @@ public class Playback extends Activity {
 					Toast.LENGTH_LONG).show();
 		}
 	}
+	Runnable run = new Runnable() {
+		@Override public void run() {
+			if(m.isPlaying()){
+				int mCurrentPosition = m.getCurrentPosition();
+				seekBar.setProgress(mCurrentPosition);
+			}
+			mHandler.postDelayed(this, 1000);
+
+			int x = m.getDuration() - m.getDuration();
+			seekBar.setMax(m.getDuration());
+			if (m.getCurrentPosition() == m.getDuration()) {
+				pause_resume.setEnabled(false);
+				seekBar.setProgress(x);
+			}
+			seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+				@Override
+				public void onStopTrackingTouch(SeekBar seekBar) {
+				}
+
+				@Override
+				public void onStartTrackingTouch(SeekBar seekBar) {
+				}
+
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				}
+			});
+		}
+	};
 }

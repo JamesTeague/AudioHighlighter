@@ -27,17 +27,19 @@ These are meant to be a timestamp inside a the length of the audio that will all
 * Writing timestamps (_flags_) to text file 
 * Renaming audio file to match with text file of flags
 * File page to gain access to previous recordings and flags
-* Add Share menu item
-* Add play button and functionality
-* Add flags on playback
+* Added Share menu item
+* Added play button and functionality
+* Added flags on playback
+* Added scrubber
+* Added Pause/Resume Button on Playback
 
 
 ###Work in progress
 * **Add popup to explain flags**
 * **Add first-timer file**
-* Add Pause/Resume Button on Playback
 * Add File Button menu item
-* Add scrubber
+* Add Stop ability upon leaving page
+* Add ability to delete files
 * Add design
 
 ###ASK KIAN
