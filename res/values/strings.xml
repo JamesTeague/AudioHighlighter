@@ -10,5 +10,6 @@
     <string name="play">play</string>
     <string name="flag">flag</string>
     <string name="title_activity_playback">Playback</string>
+    <string name="title_activity_files_list">Files_list</string>
 
 </resources>

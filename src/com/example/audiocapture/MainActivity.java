@@ -1,9 +1,13 @@
 package com.example.audiocapture;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -16,18 +20,20 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 	private MediaRecorder myAudioRecorder;
 	private String outputFile = null;
-	private FileWriter outputDoc = null;
+	private String listFiles = Environment.getExternalStorageDirectory().getAbsolutePath() + "/files.txt";
 	private File orig;
 	private File rname;
 	private String fileFlags;
@@ -37,9 +43,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	private long TotalTime = 0;
 	private ArrayList<Long> FlagAbTimes;
 	private ArrayList<Integer> FlagRelTimes;
+	private ArrayList<String> ListofFileNames;
+	private Chronometer myChronometer;
 	private int flagCount = 0;
-	MediaPlayer m;
-	BufferedWriter bw;
+	private MediaPlayer m;
+	private BufferedWriter bw;
+	private BufferedWriter fw;
+	private BufferedReader fr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +64,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		nextBtn = (Button)findViewById(R.id.Next);
 		stop.setEnabled(false);
 		flag.setEnabled(false);
-		nextBtn.setEnabled(false);
+//		nextBtn.setEnabled(false);
 		outputFile = Environment.getExternalStorageDirectory().
 				getAbsolutePath() + "/myrecording.3gp";
-		//		bw = new BufferedWriter (outputDoc);
 		myAudioRecorder = new MediaRecorder();
 		myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -67,12 +76,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
 	}
 	public void goToPlayback(View view){
-		Intent intent = new Intent(this, Playback.class);
+		Intent intent = new Intent(this, Files_list.class);
 		intent.putExtra("fileName", Environment.getExternalStorageDirectory().
 				getAbsolutePath() + "/"+ fileFlags + ".3gp");
-		intent.putExtra("myArray", FlagRelTimes);
-		intent.putExtra("flagFile",Environment.getExternalStorageDirectory().
+
+		intent.putExtra("flagFile", Environment.getExternalStorageDirectory().
 				getAbsolutePath() + "/"+ fileFlags + ".txt" );
+		intent.putExtra("listOfFiles", listFiles);
 		startActivity(intent);
 	}
 	/**
@@ -80,6 +90,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	 * @param view
 	 */
 	public void start(View view){
+		myChronometer = (Chronometer)findViewById(R.id.chronometer);
 		try {
 			if(myAudioRecorder == null){
 				//create new recorder object
@@ -91,6 +102,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 				//set place to save recording
 				myAudioRecorder.setOutputFile(outputFile);
 			}
+			myChronometer.setBase(SystemClock.elapsedRealtime());
+		    myChronometer.start();
 			//must prepare before start
 			myAudioRecorder.prepare();
 			//start recording
@@ -127,6 +140,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 			//user has selected to save
 			public void onClick(DialogInterface dialog, int which) {
 				//stop recording
+				myChronometer.stop();
 				myAudioRecorder.stop();
 				//Grab End Time
 				EndTime = System.currentTimeMillis();
@@ -186,22 +200,16 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	 */
 	public void flag(View view){
 		flagCount++;
-		if(flagCount <= 3){
-			int relativeTime;
-			//grab system time
-			FlagAbTimes.add(System.currentTimeMillis());
-			//alert user flag is done
-			Toast.makeText(getApplicationContext(), "Flagged! " + flagCount + "/3", 
-					Toast.LENGTH_LONG).show();
-			//scale time to be in correct position in recording
-			relativeTime = (int)(FlagAbTimes.get(FlagAbTimes.size()-1) - StartTime);
-			//store times away
-			FlagRelTimes.add(relativeTime);
-			//check if we have reached our limit
-			if(flagCount == 3){
-				flag.setEnabled(false);
-			}
-		}
+		int relativeTime;
+		//grab system time
+		FlagAbTimes.add(System.currentTimeMillis());
+		//alert user flag is done
+		Toast.makeText(getApplicationContext(), "Flagged! " + flagCount, 
+				Toast.LENGTH_LONG).show();
+		//scale time to be in correct position in recording
+		relativeTime = (int)(FlagAbTimes.get(FlagAbTimes.size()-1) - StartTime);
+		//store times away
+		FlagRelTimes.add(relativeTime);
 	}
 	/**
 	 * renames the audio file and creates corresponding txt file
@@ -209,10 +217,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	 * @throws IOException
 	 */
 	public void save(String filename) throws IOException{
-		//create file to make txt
-		outputDoc = new FileWriter(Environment.getExternalStorageDirectory().getAbsolutePath() +"/"+ filename +".txt");
 		//initiate writer
-		bw = new BufferedWriter (outputDoc);
+		bw = new BufferedWriter (new FileWriter(Environment.getExternalStorageDirectory().getAbsolutePath() +"/"+ filename +".txt"));
+		fw = new BufferedWriter (new FileWriter(listFiles, true));
+		fw.append(filename);
+		fw.append("\n");
+		fw.close();
 		//store back into Global val
 		fileFlags = filename;
 		//write each element to a line in the text file
@@ -228,10 +238,27 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		rname = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/"+ filename +".3gp");
 		//rename file
 		orig.renameTo(rname);
-		outputDoc.close();
 		bw.close();
 	}
 
+	private void readInFilesforNoob() throws IOException {
+		//create objects required for read
+		fr = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream(listFiles))));
+		String fline = null;
+		//read all lines in file
+		while((fline = fr.readLine()) != null){
+			//add filenames to the ArrayList
+			ListofFileNames.add(fline);	
+		}
+		if(ListofFileNames.size() < 1){
+			//TODO: Show pop up
+		}
+//		Log.v("Time Elements", ListofFileNames.toString());
+		//close all streams
+		fr.close();
+		//release objects
+		fr = null;
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

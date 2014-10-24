@@ -1,58 +1,270 @@
 package com.example.audiocapture;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 public class Playback extends Activity {
-	String fileName;
+	String filename; //holds name of 3gp
+	String timestampsFile; //holds name of txt (flag file)
 	private ArrayList<Integer> FlagRelTimes;
 	MediaPlayer m;
-	private Button play,flag1,flag2,flag3;
+	//needed to read files
+	BufferedReader br;
+	BufferedWriter bw;
+	private ShareActionProvider mShareActionProvider;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		m = new MediaPlayer();
-		setContentView(R.layout.activity_playback);
+		FlagRelTimes = new ArrayList<Integer>();
+
+		//		setContentView(R.layout.activity_playback);
 		Bundle b = new Bundle();
 		b=getIntent().getExtras();
-		play = (Button)findViewById(R.id.button3);
-		flag1 = (Button)findViewById(R.id.flag1);
-		flag2 = (Button)findViewById(R.id.flag2);
-		flag3 = (Button)findViewById(R.id.flag3);
-		fileName = b.getString("fileName");
-		FlagRelTimes = b.getIntegerArrayList("myArray");
-		Log.v("Time Elements", fileName);
-		//Disable Non-existent flags
-		if(FlagRelTimes.size() == 0){
-			Log.v("Time Elements", "FlagRelTimes is null");
-			flag1.setEnabled(false);
-			flag2.setEnabled(false);
-			flag3.setEnabled(false);
+		//path names of files
+		filename = b.getString("fileName");
+		//give proper extensions
+		timestampsFile = filename+".txt";
+		filename = filename+".3gp";
+		//		Log.v("Time Elements", timestampsFile);
+
+		try {
+			readInFlags();
+			loadActivity();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		else if(FlagRelTimes.size() == 1){
-			flag2.setEnabled(false);
-			flag3.setEnabled(false);
+	}
+
+	private void loadActivity() throws IOException{
+		ScrollView sv = new ScrollView(this);
+		sv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+		final LinearLayout linLayout = new LinearLayout(this);
+		// specifying vertical orientation
+		linLayout.setOrientation(LinearLayout.VERTICAL);
+		// creating LayoutParams  
+		//		LayoutParams linLayoutParam = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT); 
+		// set LinearLayout as a root element of the screen 
+		//setContentView(linLayout, linLayoutParam);
+		setContentView(sv);
+		sv.addView(linLayout);
+		Button play = new Button(this);
+		Button flag = new Button(this);
+		play.setText("Play");
+		flag.setText("Flag");
+		linLayout.addView(flag);
+		linLayout.addView(play);
+		Collections.sort(FlagRelTimes);
+		writeOutFlags(FlagRelTimes);
+		flag.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				FlagRelTimes.add(m.getCurrentPosition());
+				try {
+					loadActivity();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		play.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				try {
+					play(v);
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		});
+		LayoutParams lpView = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		for( int i=0; i<FlagRelTimes.size(); i++)
+		{
+			final LinearLayout horLayout = new LinearLayout(this);
+			horLayout.setOrientation(LinearLayout.HORIZONTAL);
+			Button btn = new Button(this);
+			Button delete = new Button(this);
+			delete.setId(FlagRelTimes.get(i)+1);
+			final int deleteid_ = delete.getId();
+			delete.setText("Delete");
+			btn.setId(FlagRelTimes.get(i));
+			final int id_ = btn.getId();
+			btn.setText("Flag " + DateUtils.formatElapsedTime(id_/1000));
+			horLayout.addView(btn);
+			horLayout.addView(delete);
+			linLayout.addView(horLayout, lpView);
+			delete = ((Button)findViewById(deleteid_));
+
+			delete.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AlertDialog.Builder alertDialog  = new AlertDialog.Builder(Playback.this);
+
+					alertDialog.setTitle("Delete Flag?");
+					alertDialog.setMessage("Are you sure you want to delete this flag?");
+
+					alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+						public void onClick(DialogInterface dialog, int which) {
+
+						}
+
+					});
+
+					alertDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+						public void onClick(DialogInterface dialog, int which) {
+							linLayout.removeView(horLayout);
+							FlagRelTimes.remove(Integer.valueOf(deleteid_-1));
+							try {
+								writeOutFlags(FlagRelTimes);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+						}
+
+					});
+					alertDialog.show();
+				}
+			});
+			btn = ((Button) findViewById(id_));
+			btn.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {  
+
+					m.reset();
+
+					if(m.isPlaying()){
+
+						m.stop(); 
+
+					}else{
+
+						try {
+							m.setDataSource(filename);
+						} catch (IllegalArgumentException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (SecurityException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IllegalStateException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+					try {
+						m.prepare();
+					} catch (IllegalStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					m.start();
+					m.seekTo(id_);
+					Toast.makeText(getApplicationContext(), "Playing audio from flag ", 
+							Toast.LENGTH_LONG).show();
+				}
+			});
 		}
-		else if(FlagRelTimes.size() == 2){
-			flag3.setEnabled(false);
+	}
+	/**
+	 * readInFlags
+	 * read in flags from text file
+	 * @throws IOException
+	 */
+	private void readInFlags() throws IOException {
+		br = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream(timestampsFile))));
+		String line = null;
+
+		while((line = br.readLine()) != null){
+			FlagRelTimes.add(Integer.parseInt(line));
+			Log.v("Time Elements", "IN");
 		}
+
+		br.close();
+		br = null;
+	}
+	/**
+	 * writeOutFlags
+	 * Write out all flags to txt
+	 * @param flags - ArrayList that holds timestamps (flags)
+	 * 				  to be written
+	 * @throws IOException
+	 */
+	private void writeOutFlags(ArrayList<Integer> flags) throws IOException{
+		bw = new BufferedWriter(new FileWriter(timestampsFile));
+		//write every flag to the file
+		for(int flag : flags){
+			bw.write(Integer.toString(flag));
+			bw.newLine();
+			bw.flush();
+		}
+		//close Write
+		bw.close();
+		//release object
+		bw = null;
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.playback, menu);
-		return true;
+		        //Getting the actionprovider associated with the menu item whose id is share
+		        mShareActionProvider = (ShareActionProvider) menu.findItem(R.id.share).getActionProvider();
+		 
+		        //Setting a share intent
+		        mShareActionProvider.setShareIntent(getDefaultShareIntent());
+		 
+		        return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -66,13 +278,23 @@ public class Playback extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	private Intent getDefaultShareIntent(){
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("audio/3gpp");
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + filename));
+        intent.putExtra(Intent.EXTRA_SUBJECT, filename);
+        //startActivity(Intent.createChooser(intent, "Share sound"));
+        return intent;
+}
+
 	public void play(View view) throws IllegalArgumentException,   
 	SecurityException, IllegalStateException, IOException{
 		m.reset();
 		if(m.isPlaying()){
 			m.stop();	
 		}else{
-			m.setDataSource(fileName);
+			m.setDataSource(filename);
 		}
 		m.prepare();
 		m.start();
@@ -81,50 +303,4 @@ public class Playback extends Activity {
 				Toast.LENGTH_LONG).show();
 
 	}
-	public void flag1(View view) throws IllegalArgumentException,   
-	SecurityException, IllegalStateException, IOException{
-		m.reset();
-		if(m.isPlaying()){
-			m.stop();	
-		}else{
-			m.setDataSource(fileName);
-		}
-		m.prepare();
-		m.start();
-		m.seekTo(FlagRelTimes.get(0));
-		Toast.makeText(getApplicationContext(), "Playing audio from flag1", 
-				Toast.LENGTH_LONG).show();
-
-	}
-	public void flag2(View view) throws IllegalArgumentException,   
-	SecurityException, IllegalStateException, IOException{
-		m.reset();
-		if(m.isPlaying()){
-			m.stop();	
-		}else{
-			m.setDataSource(fileName);
-		}
-		m.prepare();
-		m.start();
-		m.seekTo(FlagRelTimes.get(1));
-		Toast.makeText(getApplicationContext(), "Playing audio from flag2", 
-				Toast.LENGTH_LONG).show();
-
-	}
-	public void flag3(View view) throws IllegalArgumentException,   
-	SecurityException, IllegalStateException, IOException{
-		m.reset();
-		if(m.isPlaying()){
-			m.stop();	
-		}else{
-			m.setDataSource(fileName);
-		}
-		m.prepare();
-		m.start();
-		m.seekTo(FlagRelTimes.get(2));
-		Toast.makeText(getApplicationContext(), "Playing audio from flag3", 
-				Toast.LENGTH_LONG).show();
-
-	}
-	
 }

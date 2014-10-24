@@ -29,6 +29,10 @@
             android:name=".Playback"
             android:label="@string/title_activity_playback" >
         </activity>
+        <activity
+            android:name=".Files_list"
+            android:label="@string/title_activity_files_list" >
+        </activity>
     </application>
 
 </manifest>

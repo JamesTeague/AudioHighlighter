@@ -2,10 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.audiocapture.Playback" >
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
-
+     <item
+        android:id="@+id/share"
+        android:title="share"
+        android:showAsAction="ifRoom"
+        android:actionProviderClass="android.widget.ShareActionProvider"/>
 </menu>
