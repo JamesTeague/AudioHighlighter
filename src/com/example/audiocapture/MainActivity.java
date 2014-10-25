@@ -21,6 +21,7 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements View.OnClickListener{
@@ -46,6 +48,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	private ArrayList<String> ListofFileNames;
 	private Chronometer myChronometer;
 	private int flagCount = 0;
+	private TextView lastFlag;
 	private MediaPlayer m;
 	private BufferedWriter bw;
 	private BufferedWriter fw;
@@ -64,6 +67,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		nextBtn = (Button)findViewById(R.id.Next);
 		stop.setEnabled(false);
 		flag.setEnabled(false);
+		lastFlag = ((TextView)findViewById(R.id.textView2));
 //		nextBtn.setEnabled(false);
 		outputFile = Environment.getExternalStorageDirectory().
 				getAbsolutePath() + "/myrecording.3gp";
@@ -73,6 +77,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
 		myAudioRecorder.setOutputFile(outputFile);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		myChronometer = (Chronometer)findViewById(R.id.chronometer);
+		myChronometer.setVisibility(View.INVISIBLE);
+//		myChronometer.stop();
+//		myChronometer.setBase(SystemClock.elapsedRealtime());
+//		myChronometer.setText("00:00");
+		
+
 
 	}
 	public void goToPlayback(View view){
@@ -83,6 +94,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		intent.putExtra("flagFile", Environment.getExternalStorageDirectory().
 				getAbsolutePath() + "/"+ fileFlags + ".txt" );
 		intent.putExtra("listOfFiles", listFiles);
+		myChronometer.stop();
 		startActivity(intent);
 	}
 	/**
@@ -90,7 +102,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	 * @param view
 	 */
 	public void start(View view){
-		myChronometer = (Chronometer)findViewById(R.id.chronometer);
 		try {
 			if(myAudioRecorder == null){
 				//create new recorder object
@@ -103,6 +114,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 				myAudioRecorder.setOutputFile(outputFile);
 			}
 			myChronometer.setBase(SystemClock.elapsedRealtime());
+			myChronometer.setVisibility(View.VISIBLE);
 		    myChronometer.start();
 			//must prepare before start
 			myAudioRecorder.prepare();
@@ -141,6 +153,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 			public void onClick(DialogInterface dialog, int which) {
 				//stop recording
 				myChronometer.stop();
+				myChronometer.setVisibility(View.INVISIBLE);
 				myAudioRecorder.stop();
 				//Grab End Time
 				EndTime = System.currentTimeMillis();
@@ -207,8 +220,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		Toast.makeText(getApplicationContext(), "Flagged! " + flagCount, 
 				Toast.LENGTH_LONG).show();
 		//scale time to be in correct position in recording
-		relativeTime = (int)(FlagAbTimes.get(FlagAbTimes.size()-1) - StartTime);
+		relativeTime = (int)(FlagAbTimes.get(FlagAbTimes.size()-1) - StartTime);	
+		lastFlag.setText("Last bite was at " + DateUtils.formatElapsedTime(relativeTime));
 		//store times away
+		
 		FlagRelTimes.add(relativeTime);
 	}
 	/**
@@ -217,6 +232,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	 * @throws IOException
 	 */
 	public void save(String filename) throws IOException{
+		lastFlag.setText("");
 		//initiate writer
 		bw = new BufferedWriter (new FileWriter(Environment.getExternalStorageDirectory().getAbsolutePath() +"/"+ filename +".txt"));
 		fw = new BufferedWriter (new FileWriter(listFiles, true));

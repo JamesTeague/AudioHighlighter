@@ -63,15 +63,36 @@ public class Files_list extends Activity {
 		sv.addView(linLayout);
 		LayoutParams lpView = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		//loop through list of file names
-		for( int i=0; i<ListofFileNames.size(); i++)
+		for( int i=1; i<=ListofFileNames.size(); i++)
 		{
 			//create button, set id, and set the text
+			final LinearLayout horLayout = new LinearLayout(this);
+			horLayout.setOrientation(LinearLayout.HORIZONTAL);	
 			Button btn = new Button(this);
+			Button delete = new Button(this);
 			btn.setId(i);
-			btn.setText(ListofFileNames.get(i));
-			final String fileName = ListofFileNames.get(i);
-			linLayout.addView(btn, lpView);
+			delete.setId(i*1000);
+			final int deleteid_ = delete.getId();
+			btn.setText(ListofFileNames.get(i-1));
+			final String fileName = ListofFileNames.get(i-1);
+			horLayout.addView(btn);
+			horLayout.addView(delete);
+			linLayout.addView(horLayout, lpView);
+			delete = ((Button)findViewById(deleteid_));
 			btn = ((Button) findViewById(i));
+			delete.setOnClickListener(new View.OnClickListener()
+			{
+				public void onClick(View view){
+					ListofFileNames.remove(deleteid_/1000-1);
+					try {
+						writeOutFiles(ListofFileNames);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					loadActivity();
+				}
+			});
 			btn.setOnClickListener(new View.OnClickListener() {
 				//call Playback page
 				public void onClick(View view) {  
