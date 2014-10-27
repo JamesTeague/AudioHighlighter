@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -35,11 +37,11 @@ public class Playback extends Activity {
 	String filename; //holds name of 3gp
 	String timestampsFile; //holds name of txt (flag file)
 	private ArrayList<Integer> FlagRelTimes;
-	MediaPlayer m;
+	private MediaPlayer m;
 	//needed to read files
-	BufferedReader br;
-	BufferedWriter bw;
-	private Button pause_resume;
+	private BufferedReader br;
+	private BufferedWriter bw;
+	private ImageButton pause_resume;
 	private ShareActionProvider mShareActionProvider;
 	private SeekBar seekBar;
 	private Handler mHandler;
@@ -47,19 +49,17 @@ public class Playback extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Bundle b = new Bundle();
 		m = new MediaPlayer();
 		FlagRelTimes = new ArrayList<Integer>();
-
 		//		setContentView(R.layout.activity_playback);
-		Bundle b = new Bundle();
-		b=getIntent().getExtras();
+		b = getIntent().getExtras();
 		//path names of files
 		filename = b.getString("fileName");
 		//give proper extensions
 		timestampsFile = filename+".txt";
+		//reuse of variable to new pathname
 		filename = filename+".3gp";
-		//		Log.v("Time Elements", timestampsFile);
-
 		try {
 			readInFlags();
 			loadActivity();
@@ -67,7 +67,10 @@ public class Playback extends Activity {
 			e.printStackTrace();
 		}
 	}
-
+	public void goToPlayback(View view){
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
 	private void loadActivity() throws IOException{
 		ScrollView sv = new ScrollView(this);
 		sv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
@@ -75,7 +78,7 @@ public class Playback extends Activity {
 		// specifying vertical orientation
 		linLayout.setOrientation(LinearLayout.VERTICAL);
 		// creating LayoutParams  
-		//		LayoutParams linLayoutParam = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT); 
+		LayoutParams linLayoutParam = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT); 
 		// set LinearLayout as a root element of the screen 
 		//setContentView(linLayout, linLayoutParam);
 		setContentView(sv);
@@ -88,53 +91,45 @@ public class Playback extends Activity {
 		mHandler.postDelayed(run, 1000);
 		Button play = new Button(this);
 		Button flag = new Button(this);
-		pause_resume = new Button(this);
+		pause_resume = new ImageButton(this);
+		pause_resume.setImageResource(R.drawable.greenpauseforplayback03);
+		pause_resume.setBackgroundColor(Color.TRANSPARENT);
 		play.setText("Play");
 		flag.setText("Flag");
-		pause_resume.setText("Pause");
 		linLayout.addView(seekBar);
 		linLayout.addView(flag);
 		linLayout.addView(play);
-		linLayout.addView(pause_resume);
+		linLayout.addView(pause_resume,linLayoutParam);
 		pause_resume.setEnabled(false);
 		Collections.sort(FlagRelTimes);
 		writeOutFlags(FlagRelTimes);
 		flag.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				FlagRelTimes.add(m.getCurrentPosition());
 				try {
 					loadActivity();
 					pause_resume.setEnabled(true);
-					pause_resume.setText("Pause");
+//					pause_resume.setText("Pause");
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		});
 		play.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
-
 				try {
 					play(v);
 				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (SecurityException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalStateException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 			}
 		});
 		pause_resume.setOnClickListener(new View.OnClickListener() {
@@ -143,16 +138,12 @@ public class Playback extends Activity {
 				try {
 					pause(v);
 				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (SecurityException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalStateException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -183,25 +174,19 @@ public class Playback extends Activity {
 					alertDialog.setMessage("Are you sure you want to delete this flag?");
 					alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-
+							//do nothing
 						}
-
 					});
-
 					alertDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-
 						public void onClick(DialogInterface dialog, int which) {
 							linLayout.removeView(horLayout);
 							FlagRelTimes.remove(Integer.valueOf(deleteid_-1));
 							try {
 								writeOutFlags(FlagRelTimes);
 							} catch (IOException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-
 						}
-
 					});
 					alertDialog.show();
 				}
@@ -209,40 +194,28 @@ public class Playback extends Activity {
 			btn = ((Button) findViewById(id_));
 			btn.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {  
-
 					m.reset();
-
 					if(m.isPlaying()){
-
 						m.stop(); 
-
 					}else{
-
 						try {
 							m.setDataSource(filename);
 						} catch (IllegalArgumentException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (SecurityException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (IllegalStateException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-
 					}
 					seekBar.setProgress(id_);
 					try {
 						m.prepare();
 					} catch (IllegalStateException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					m.start();
@@ -250,7 +223,8 @@ public class Playback extends Activity {
 					Toast.makeText(getApplicationContext(), "Playing audio from flag ", 
 							Toast.LENGTH_LONG).show();
 					pause_resume.setEnabled(true);
-					pause_resume.setText("Pause");
+					//TODO set pause back
+//					pause_resume.setText("Pause");
 				}
 			});
 		}
@@ -287,7 +261,7 @@ public class Playback extends Activity {
 			bw.newLine();
 			bw.flush();
 		}
-		//close Write
+		//close Writer
 		bw.close();
 		//release object
 		bw = null;
@@ -299,10 +273,8 @@ public class Playback extends Activity {
 		getMenuInflater().inflate(R.menu.playback, menu);
 		//Getting the actionprovider associated with the menu item whose id is share
 		mShareActionProvider = (ShareActionProvider) menu.findItem(R.id.share).getActionProvider();
-
 		//Setting a share intent
 		mShareActionProvider.setShareIntent(getDefaultShareIntent());
-
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -315,10 +287,12 @@ public class Playback extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
+		else if (id == R.id.mic){
+			goToPlayback(item.getActionView());
+		}
 		return super.onOptionsItemSelected(item);
 	}
 	private Intent getDefaultShareIntent(){
-
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("audio/3gpp");
 		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + filename));
@@ -342,30 +316,28 @@ public class Playback extends Activity {
 		Toast.makeText(getApplicationContext(), "Playing audio from beginning", 
 				Toast.LENGTH_LONG).show();
 		pause_resume.setEnabled(true);
-		pause_resume.setText("Pause");
+		//TODO set back to pause image
+//		pause_resume.setText("Pause");
 	}
 	public void pause(View view) throws IllegalArgumentException,   
 	SecurityException, IllegalStateException, IOException{
-		pause_resume = (Button)view;
-		String buttonText = pause_resume.getText().toString();
-		if (buttonText == "Pause") {
-			pause_resume.setText("Resume");
+			//TODO set back to Resume
+//			pause_resume.setText("Resume");
 			if(m.isPlaying()){
 				m.pause();
 				Toast.makeText(getApplicationContext(), "Paused audio", 
 						Toast.LENGTH_LONG).show();
 			}
-		}
-		else if (buttonText == "Resume"){
-			int mCurrentPosition= m.getCurrentPosition();
-
-			seekBar.setProgress(mCurrentPosition);
-			m.start();
-			m.seekTo(mCurrentPosition);
-			pause_resume.setText("Pause");
-			Toast.makeText(getApplicationContext(), "Playing audio from paused spot", 
-					Toast.LENGTH_LONG).show();
-		}
+			else{
+				int mCurrentPosition= m.getCurrentPosition();			
+				seekBar.setProgress(mCurrentPosition);
+				m.start();
+				m.seekTo(mCurrentPosition);
+				//TODO Set back to Pause
+//				pause_resume.setText("Pause");
+				Toast.makeText(getApplicationContext(), "Playing audio from paused spot", 
+						Toast.LENGTH_LONG).show();
+			}
 	}
 	Runnable run = new Runnable() {
 		@Override public void run() {

@@ -1,7 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.audiocapture.Files_list" >
-
+	
+    <item android:id="@+id/mic1"
+          android:icon="@drawable/miniwhitemicrophone02"
+          android:title="@string/mic"
+          android:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

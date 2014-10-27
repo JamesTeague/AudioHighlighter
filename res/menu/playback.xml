@@ -2,6 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.audiocapture.Playback" >
 
+    <item android:id="@+id/mic"
+          android:icon="@drawable/miniwhitemicrophone02"
+          android:title="@string/mic"
+          android:showAsAction="ifRoom" />
      <item
         android:id="@+id/share"
         android:title="share"

@@ -6,50 +6,39 @@
    android:paddingLeft="@dimen/activity_horizontal_margin"
    android:paddingRight="@dimen/activity_horizontal_margin"
    android:paddingTop="@dimen/activity_vertical_margin"
+   android:background="@drawable/emptybackground"
    tools:context=".MainActivity" >
 
-   <TextView
-      android:id="@+id/textView1"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentStart="true"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentTop="true"
-      android:layout_marginTop="32dp"
-      android:text="@string/Recording"
-      android:textAppearance="?android:attr/textAppearanceMedium" />
-   
-   <TextView
-      android:id="@+id/textView2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentStart="true"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentTop="true"
-      android:layout_marginTop="50dp"
-      android:text="@string/Recording"
-      android:textAppearance="?android:attr/textAppearanceMedium" />
 
-   <ImageView
-      android:id="@+id/imageView1"
-      android:layout_width="100dp"
-      android:layout_height="100dp"
-      android:layout_below="@+id/textView1"
+   <ImageButton
+      android:id="@+id/imageButton1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_centerHorizontal="true"
       android:layout_marginTop="37dp"
       android:scaleType="fitXY"
-      android:src="@android:drawable/presence_audio_online" />
+      android:src="@drawable/record03"
+      android:background="@android:color/transparent"
+      android:onClick="startOrStop" />
+   
 	<Chronometer
         android:id="@+id/chronometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/button1"
-        android:layout_marginBottom="44dp"
-        android:layout_marginRight="24dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="90dp"
         android:textSize="50sp"
         android:text="Chronometer" />
-   <Button
+   <TextView
+      android:id="@+id/textView2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+	  android:layout_below="@+id/imageButton1"
+      android:layout_marginTop="10dp"
+      android:layout_centerInParent="true"
+      android:text="@string/Recording"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+<!--    <Button
       android:id="@+id/button1"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -57,36 +46,36 @@
       android:layout_marginTop="67dp"
       android:layout_toStartOf="@+id/imageView1"
       android:onClick="start"
-      android:text="@string/start" />
+      android:text="@string/start" /> -->
 
-   <Button
+<!--    <Button
       android:id="@+id/button2"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignBaseline="@+id/button1"
       android:layout_alignBottom="@+id/button1"
-      android:layout_alignEnd="@+id/textView1"
+      android:layout_alignEnd="@+id/textView2"
       android:layout_marginEnd="40dp"
       android:onClick="stop"
-      android:text="@string/stop" />
+      android:text="@string/stop" /> -->
 
-   
-
-   <Button
+   <ImageButton
        android:id="@+id/flagButton"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_alignTop="@+id/button2"
-       android:layout_toEndOf="@+id/imageView1"
-       android:text="@string/flag"
-       android:onClick="flag" />
-    <Button
+       android:layout_below="@id/textView2"
+       android:layout_centerInParent="true"
+       android:src="@drawable/littlerecord07"
+       android:background="@android:color/transparent"
+       android:onClick="flag"
+       android:text="@string/flag" />
+   
+<!--     <Button
        android:id="@+id/Next"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:layout_alignBottom="@+id/flagButton"
        android:text="Next Page"
-       android:onClick="goToPlayback" />
+       android:onClick="goToPlayback" /> -->
    
-
 </RelativeLayout>

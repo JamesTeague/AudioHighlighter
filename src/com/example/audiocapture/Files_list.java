@@ -21,10 +21,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 public class Files_list extends Activity {
-	String listFiles;
+	private String listFiles;
 	private ArrayList<String> ListofFileNames;
-	BufferedReader fr;
-	BufferedWriter fw;
+	private BufferedReader fr;
+	private BufferedWriter fw;
 	final private String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/files.txt";
 	
 	@Override
@@ -87,7 +87,6 @@ public class Files_list extends Activity {
 					try {
 						writeOutFiles(ListofFileNames);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					loadActivity();
@@ -105,7 +104,10 @@ public class Files_list extends Activity {
 			});
 		}
 	}
-	
+	public void goToPlayback(View view){
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
 	/**
 	 * readInFiles
 	 * Will read in file names from the specified .txt file
@@ -164,6 +166,9 @@ public class Files_list extends Activity {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
+		}
+		else if(id == R.id.mic1){
+			goToPlayback(item.getActionView());
 		}
 		return super.onOptionsItemSelected(item);
 	}
