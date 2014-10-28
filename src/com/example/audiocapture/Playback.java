@@ -76,6 +76,10 @@ public class Playback extends Activity {
 		}
 	}
 	public void goToPlayback(View view){
+		if(m.isPlaying()){
+			m.stop();			
+		}
+		m.release();
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
@@ -83,7 +87,6 @@ public class Playback extends Activity {
 		Intent intent = new Intent(this, Files_list.class);
 		intent.putExtra("fileName", Environment.getExternalStorageDirectory().
 				getAbsolutePath() + "/"+ rfilename + ".3gp");
-
 		intent.putExtra("flagFile", Environment.getExternalStorageDirectory().
 				getAbsolutePath() + "/"+ rfilename + ".txt" );
 		intent.putExtra("listOfFiles", rfilename);
@@ -150,13 +153,13 @@ public class Playback extends Activity {
 		flag.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				FlagRelTimes.add(m.getCurrentPosition());
-				try {
-					loadActivity();
-//					pause_resume.setEnabled(true);
-					// pause_resume.setText("Pause");
-				} catch (IOException e) {
-					e.printStackTrace();
+				if(m.getCurrentPosition() > 5000 && m.isPlaying()){
+					FlagRelTimes.add(m.getCurrentPosition()-5000);
+					try {
+						loadActivity();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		});
@@ -220,7 +223,6 @@ public class Playback extends Activity {
 			delete.setBackgroundColor(Color.TRANSPARENT);
 			RelativeLayout.LayoutParams lpLeftRule = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			lpLeftRule.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-
 			myInnerLayout.addView(myText);
 			//myInnerLayout.setGravity(Gravity.CENTER_VERTICAL);
 			myFlagButtons.addView(btn, lp);
@@ -303,7 +305,6 @@ public class Playback extends Activity {
 
 		while((line = br.readLine()) != null){
 			FlagRelTimes.add(Integer.parseInt(line));
-			Log.v("Time Elements", "IN");
 		}
 
 		br.close();

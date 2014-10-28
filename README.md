@@ -1,4 +1,4 @@
-Quote Crunch
+Quote Bite
 ================
 ###Description
 &nbsp;&nbsp;&nbsp;&nbsp;Record lectures, interviews, and other important dialogues and leave yourself markers. Go back and start listening to from where you want. Eliminate the need to listen and wait for the part you need to here. Leave yourself a flag and skip right to it. 
@@ -9,10 +9,10 @@ Quote Crunch
 * Alecia McEachran
 
 ###Designer
-* Susanna
+* Susanna Hayward
 
 ###Journalist
-* Luna Ward
+* Rachel Ward
 
 
 
@@ -41,4 +41,3 @@ These are meant to be a timestamp inside a the length of the audio that will all
 * Add Stop ability upon leaving page
 * Add ability to delete files
 * *rename files*
-* Add design

@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+
 public class Files_list extends Activity {
 	private String listFiles;
 	private ArrayList<String> ListofFileNames;
@@ -94,11 +96,13 @@ public class Files_list extends Activity {
 			Button btn = new Button(this);
 			ImageButton delete = new ImageButton(this);
 			btn.setId(i);
+			btn.setWidth(R.layout.activity_files_list - 50);
+			btn.setGravity(Gravity.START);;
 			delete.setId(i*1000);
 			delete.setImageResource(R.drawable.whitetrash);
 			delete.setBackgroundColor(Color.TRANSPARENT);
 			final int deleteid_ = delete.getId();
-			btn.setText(ListofFileNames.get(i-1));
+			btn.setText(ListofFileNames.get(i-1).toUpperCase());
 			btn.setBackgroundColor(Color.TRANSPARENT);
 			final String fileName = ListofFileNames.get(i-1);
 			horLayout.addView(btn);
