@@ -7,15 +7,14 @@
    android:paddingRight="@dimen/activity_horizontal_margin"
    android:paddingTop="@dimen/activity_vertical_margin"
    android:background="@drawable/emptybackground"
-   tools:context=".MainActivity" >
-
-
+   tools:context=".MainActivity" > 
+       
    <ImageButton
       android:id="@+id/imageButton1"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerHorizontal="true"
-      android:layout_marginTop="85dp"
+      android:layout_marginTop="37dp"
       android:scaleType="fitXY"
       android:src="@drawable/newrecord"
       android:background="@android:color/transparent"
@@ -26,71 +25,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="178dp"
-        android:textSize="75sp"
+        android:layout_marginTop="150dp"
+        android:textSize="60sp"
         android:text="Chronometer" />
+	
    <TextView
       android:id="@+id/textView2"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
 	  android:layout_below="@+id/imageButton1"
-      android:layout_marginTop="30dp"
+      android:layout_marginTop="20dp"
       android:layout_centerInParent="true"
       android:text="@string/Recording"
-      android:textAppearance="?android:attr/textAppearanceMedium" 
-      android:textColor="#A1A1A1"
-      android:textSize="30dp"
-      android:textStyle="bold"/>
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:textColor="#A5A5A5"
+      android:textSize="30dp" />
+   
    <TextView
       android:id="@+id/textView3"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
 	  android:layout_below="@+id/textView2"
       android:layout_centerInParent="true"
-      android:text=""
-      android:textAppearance="?android:attr/textAppearanceMedium" 
-      android:textColor="#A1A1A1"
-      android:textSize="30dp"
-      android:textStyle="bold"/>
-<!--    <Button
-      android:id="@+id/button1"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/imageView1"
-      android:layout_marginTop="67dp"
-      android:layout_toStartOf="@+id/imageView1"
-      android:onClick="start"
-      android:text="@string/start" /> -->
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:textColor="#A5A5A5"
+      android:textSize="30dp" />
 
-<!--    <Button
-      android:id="@+id/button2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignBaseline="@+id/button1"
-      android:layout_alignBottom="@+id/button1"
-      android:layout_alignEnd="@+id/textView2"
-      android:layout_marginEnd="40dp"
-      android:onClick="stop"
-      android:text="@string/stop" /> -->
 
    <ImageButton
        android:id="@+id/flagButton"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_below="@id/textView3"
+       android:layout_below="@id/textView2"
+      android:layout_marginTop="200dp"
        android:layout_centerInParent="true"
-       android:src="@drawable/littlerecord07"
-       android:layout_marginTop="120sp"
+       android:src="@drawable/quote_03"
        android:background="@android:color/transparent"
        android:onClick="flag"
        android:text="@string/flag" />
-   
-<!--     <Button
-       android:id="@+id/Next"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_alignBottom="@+id/flagButton"
-       android:text="Next Page"
-       android:onClick="goToPlayback" /> -->
    
 </RelativeLayout>

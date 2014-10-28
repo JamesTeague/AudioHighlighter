@@ -37,7 +37,7 @@ public class Files_list extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setTitle("Quote Bite");
+		setTitle("QuoteBite");
 		getActionBar().setIcon(R.drawable.quoteformenu);
 		super.onCreate(savedInstanceState);
 		

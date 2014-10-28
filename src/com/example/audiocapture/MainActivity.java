@@ -31,7 +31,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 	private MediaRecorder myAudioRecorder;
@@ -60,7 +59,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setTitle("Quote Bite");
+		setTitle("QuoteBite");
 		getActionBar().setIcon(R.drawable.quoteformenu);
 		FlagAbTimes = new ArrayList<Long>();
 		FlagRelTimes = new ArrayList<Integer>();
@@ -74,7 +73,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 //		nextBtn = (Button)findViewById(R.id.Next);
 		record = (ImageView)findViewById(R.id.imageButton1);
 //		stop.setEnabled(false);
-		flag.setImageResource(R.drawable.littlerecord07);
+		flag.setImageResource(R.drawable.quotebite);
 		flag.setVisibility(View.INVISIBLE);
 		lastFlag = ((TextView)findViewById(R.id.textView2));
 		lastFlagTime =((TextView)findViewById(R.id.textView3));
@@ -92,9 +91,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		if(!exists){
 			AlertDialog.Builder alertDialog  = new AlertDialog.Builder(MainActivity.this);
 			alertDialog.setTitle("What are Bites?!");
-			alertDialog.setMessage("Tap the Bite button to capture an important qoute!"
-					+ " It will mark 5 seconds of audio before you tap, so you never miss anything good."
-					+ " Tap away: You can catch as many QuoteBites in a recording as you'd like.");
+			alertDialog.setMessage("Tap the Bite button to capture an important quote!"
+					+ " It will mark 15 seconds of audio before you tap, so you never miss anything good.");
 			alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 				//do nothing
@@ -156,7 +154,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 			recording = true;
 			//Grab Start Time
 			StartTime = System.currentTimeMillis();
-			Threshold = StartTime + 5000;
+			Threshold = StartTime + 15000;
 			Log.v("Time Elements", Long.toString(StartTime));
 		} catch (IllegalStateException e) {
 			// catch error that we called a method on an illegal state
@@ -170,8 +168,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		//allow stop and flags
 //		stop.setEnabled(true);
 		flag.setEnabled(true);
-		Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
-
 	}
 	public void stop(View view) throws IllegalArgumentException,
 	SecurityException, IllegalStateException, IOException{
@@ -203,13 +199,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 				//delete object to record
 				myAudioRecorder.release();
 				myAudioRecorder  = null;
-				//disable stop and flag
-//				stop.setEnabled(false);
+				//disable flag
 				flag.setEnabled(false);
 				//allow new recording
-//				start.setEnabled(true);
-				Toast.makeText(getApplicationContext(), "Audio recorded successfully",
-						Toast.LENGTH_LONG).show();
 				//m.setDataSource(outputFile);
 
 				AlertDialog.Builder alertDialog  = new AlertDialog.Builder(MainActivity.this);
@@ -230,18 +222,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
 							//caught file error
 							e.printStackTrace();
 						}
-						//set up toast
-						CharSequence text = "File '"+ fileName +"' has saved!";
-						int duration = Toast.LENGTH_SHORT;
-						Toast toast = Toast.makeText(context, text, duration);
-						toast.show();
 					}
 				});
 				alertDialog.show();
 			}
 		});
 		alertDialog.show();
-//		nextBtn.setEnabled(true);
 	}
 
 	/**
@@ -255,7 +241,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 			int relativeTime;
 			//grab system time
 			
-			FlagAbTimes.add(System.currentTimeMillis()-5000);
+			FlagAbTimes.add(System.currentTimeMillis()-15000);
 			//scale time to be in correct position in recording
 			relativeTime = (int)(FlagAbTimes.get(FlagAbTimes.size()-1) - StartTime);	
 			lastFlag.setText("LAST BITE AT");

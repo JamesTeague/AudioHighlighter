@@ -36,12 +36,13 @@ public final class R {
         public static final int play_bite=0x7f02000b;
         public static final int presstostop=0x7f02000c;
         public static final int quote_03=0x7f02000d;
-        public static final int quotebite_08=0x7f02000e;
-        public static final int quoteformenu=0x7f02000f;
-        public static final int record03=0x7f020010;
-        public static final int recordformenu=0x7f020011;
-        public static final int recordwithouticon03=0x7f020012;
-        public static final int whitetrash=0x7f020013;
+        public static final int quotebite=0x7f02000e;
+        public static final int quotebite_08=0x7f02000f;
+        public static final int quoteformenu=0x7f020010;
+        public static final int record03=0x7f020011;
+        public static final int recordformenu=0x7f020012;
+        public static final int recordwithouticon03=0x7f020013;
+        public static final int whitetrash=0x7f020014;
     }
     public static final class id {
         public static final int chronometer=0x7f080001;

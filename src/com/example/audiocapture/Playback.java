@@ -50,7 +50,7 @@ public class Playback extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setTitle("Quote Bite");
+		setTitle("QuoteBite");
 		getActionBar().setIcon(R.drawable.quoteformenu);
 		super.onCreate(savedInstanceState);
 		Bundle b = new Bundle();
@@ -142,8 +142,8 @@ public class Playback extends Activity {
 		flag.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(m.getCurrentPosition() > 5000 && m.isPlaying()){
-					FlagRelTimes.add(m.getCurrentPosition()-5000);
+				if(m.getCurrentPosition() > 15000 && m.isPlaying()){
+					FlagRelTimes.add(m.getCurrentPosition()-15000);
 					try {
 						loadActivity();
 					} catch (IOException e) {
@@ -274,11 +274,6 @@ public class Playback extends Activity {
 					}
 					m.start();
 					m.seekTo(id_);
-					Toast.makeText(getApplicationContext(), "Playing audio from " + DateUtils.formatElapsedTime(id_/1000), 
-							Toast.LENGTH_LONG).show();
-//					pause_resume.setEnabled(true);
-					//TODO set pause back
-					// pause_resume.setText("Pause");
 				}
 			});
 		}
@@ -350,36 +345,32 @@ public class Playback extends Activity {
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("audio/3gpp");
 		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + filename));
-		intent.putExtra(Intent.EXTRA_SUBJECT, rfilename);
+		intent.putExtra(Intent.EXTRA_SUBJECT, basicFileName.toUpperCase());
 		//startActivity(Intent.createChooser(intent, "Share sound"));
 		return intent;
 	}
 
 	public void play(View view) throws IllegalArgumentException,   
 	SecurityException, IllegalStateException, IOException{
+		int x = m.getDuration() - m.getDuration();
+		if(seekBar.getProgress() == x) {
+			m.setDataSource(filename);
+			m.prepare();
+			seekBar.setProgress(x);
+			m.start();
+			m.seekTo(x);
+		}
 		if(!m.isPlaying()){
 			int mCurrentPosition= m.getCurrentPosition();			
 			seekBar.setProgress(mCurrentPosition);
 			m.start();
-			m.seekTo(mCurrentPosition);
-			//TODO Set back to Pause
-			//				pause_resume.setText("Pause");
-			Toast.makeText(getApplicationContext(), "Playing audio from paused spot", 
-					Toast.LENGTH_LONG).show();
-			
+			m.seekTo(mCurrentPosition);			
 		}
 	}
 	public void pause(View view) throws IllegalArgumentException,   
 	SecurityException, IllegalStateException, IOException{
-		//TODO set back to Resume
-		//			pause_resume.setText("Resume");
 		if(m.isPlaying()){
 			m.pause();
-			Toast.makeText(getApplicationContext(), "Paused audio", 
-					Toast.LENGTH_LONG).show();
-		}
-		else{
-			
 		}
 	}
 	Runnable run = new Runnable() {
@@ -393,7 +384,6 @@ public class Playback extends Activity {
 			int x = m.getDuration() - m.getDuration();
 			seekBar.setMax(m.getDuration());
 			if (m.getCurrentPosition() == m.getDuration()) {
-//				pause_resume.setEnabled(false);
 				seekBar.setProgress(x);
 			}
 			seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -436,12 +426,15 @@ public class Playback extends Activity {
 					m.start();
 					m.seekTo(progress);
 
+					int x = m.getDuration() - m.getDuration();
 					if (!m.isPlaying()) {
-						int x = m.getDuration() - m.getDuration();
 						seekBar.setProgress(x);
 						m.stop();
 					}
-
+					if (m.getCurrentPosition() == m.getDuration()) {
+						m.stop();
+						seekBar.setProgress(x);
+					}
 
 				}
 			});

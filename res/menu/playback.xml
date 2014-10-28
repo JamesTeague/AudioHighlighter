@@ -6,10 +6,12 @@
           android:icon="@drawable/recordformenu"
           android:title="@string/mic"
           android:showAsAction="ifRoom" />
+    
     <item android:id="@+id/folderPlayback"
           android:icon="@drawable/folderformenu"
-          android:title="@string/mic"
+          android:title="@string/Folder"
           android:showAsAction="ifRoom" />
+    
      <item
         android:id="@+id/share"
         android:title="@string/share"
