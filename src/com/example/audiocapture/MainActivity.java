@@ -116,12 +116,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	}
 	public void goToFiles(View view){
 		Intent intent = new Intent(this, Files_list.class);
-		intent.putExtra("fileName", Environment.getExternalStorageDirectory().
-				getAbsolutePath() + "/"+ fileFlags + ".3gp");
-
-		intent.putExtra("flagFile", Environment.getExternalStorageDirectory().
-				getAbsolutePath() + "/"+ fileFlags + ".txt" );
-		intent.putExtra("listOfFiles", listFiles);
 		myChronometer.stop();
 		startActivity(intent);
 	}

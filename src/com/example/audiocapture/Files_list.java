@@ -40,11 +40,8 @@ public class Files_list extends Activity {
 		setTitle("Quote Bite");
 		getActionBar().setIcon(R.drawable.quoteformenu);
 		super.onCreate(savedInstanceState);
-		//		setContentView(R.layout.activity_files_list);
-		Bundle b = new Bundle();
-		b = getIntent().getExtras();
+		
 		ListofFileNames = new ArrayList<String>();
-		listFiles = b.getString("listOfFiles");
 		try {
 			readInFiles();
 		} catch (IOException e) {
@@ -167,7 +164,7 @@ public class Files_list extends Activity {
 	 */
 	private void readInFiles() throws IOException {
 		//create objects required for read
-		fr = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream(listFiles))));
+		fr = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream(filePath))));
 		String fline = null;
 		//read all lines in file
 		while((fline = fr.readLine()) != null){

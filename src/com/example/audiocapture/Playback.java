@@ -19,10 +19,8 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,20 +74,11 @@ public class Playback extends Activity {
 		}
 	}
 	public void goToPlayback(View view){
-		if(m.isPlaying()){
-			m.stop();			
-		}
-		m.release();
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
 	public void goToFiles(View view){
 		Intent intent = new Intent(this, Files_list.class);
-		intent.putExtra("fileName", Environment.getExternalStorageDirectory().
-				getAbsolutePath() + "/"+ rfilename + ".3gp");
-		intent.putExtra("flagFile", Environment.getExternalStorageDirectory().
-				getAbsolutePath() + "/"+ rfilename + ".txt" );
-		intent.putExtra("listOfFiles", rfilename);
 		startActivity(intent);
 	}
 
@@ -352,7 +341,7 @@ public class Playback extends Activity {
 		if (id == R.id.mic){
 			goToPlayback(item.getActionView());
 		}
-		if(id == R.id.folder){
+		if(id == R.id.folderPlayback){
 			goToFiles(item.getActionView());
 		}
 		return super.onOptionsItemSelected(item);
