@@ -42,7 +42,3 @@ These are meant to be a timestamp inside a the length of the audio that will all
 * Add ability to delete files
 * *rename files*
 * Add design
-
-###ASK KIAN
-* Reset Chronometer on the onCreate of Main Activity
-* Chronometer on Playback page

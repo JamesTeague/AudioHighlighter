@@ -3,14 +3,9 @@
     tools:context="com.example.audiocapture.MainActivity" >
 
     <item android:id="@+id/folder"
-          android:icon="@drawable/miniwhitefolder05"
+          android:icon="@drawable/folderformenu"
           android:title="@string/Folder"
           android:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
     
-
+    
 </menu>

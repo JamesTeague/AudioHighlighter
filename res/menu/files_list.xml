@@ -3,13 +3,8 @@
     tools:context="com.example.audiocapture.Files_list" >
 	
     <item android:id="@+id/mic1"
-          android:icon="@drawable/miniwhitemicrophone02"
+          android:icon="@drawable/recordformenu"
           android:title="@string/mic"
           android:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
 
 </menu>

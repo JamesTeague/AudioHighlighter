@@ -3,12 +3,16 @@
     tools:context="com.example.audiocapture.Playback" >
 
     <item android:id="@+id/mic"
-          android:icon="@drawable/miniwhitemicrophone02"
+          android:icon="@drawable/recordformenu"
+          android:title="@string/mic"
+          android:showAsAction="ifRoom" />
+    <item android:id="@+id/folderPlayback"
+          android:icon="@drawable/folderformenu"
           android:title="@string/mic"
           android:showAsAction="ifRoom" />
      <item
         android:id="@+id/share"
-        android:title="share"
+        android:title="@string/share"
         android:showAsAction="ifRoom"
         android:actionProviderClass="android.widget.ShareActionProvider"/>
 </menu>

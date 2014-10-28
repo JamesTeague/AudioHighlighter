@@ -23,24 +23,37 @@ public final class R {
     }
     public static final class drawable {
         public static final int emptybackground=0x7f020000;
-        public static final int greenpauseforplayback03=0x7f020001;
-        public static final int ic_launcher=0x7f020002;
-        public static final int littlerecord07=0x7f020003;
-        public static final int miniwhitefolder05=0x7f020004;
-        public static final int miniwhitemicrophone02=0x7f020005;
-        public static final int record03=0x7f020006;
-        public static final int recordwithouticon03=0x7f020007;
+        public static final int file_button_03=0x7f020001;
+        public static final int folderformenu=0x7f020002;
+        public static final int greenpauseforplayback03=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int littlerecord07=0x7f020005;
+        public static final int miniwhitefolder05=0x7f020006;
+        public static final int miniwhitemicrophone02=0x7f020007;
+        public static final int newrecord=0x7f020008;
+        public static final int pause_03=0x7f020009;
+        public static final int play_03=0x7f02000a;
+        public static final int play_bite=0x7f02000b;
+        public static final int presstostop=0x7f02000c;
+        public static final int quote_03=0x7f02000d;
+        public static final int quotebite_08=0x7f02000e;
+        public static final int quoteformenu=0x7f02000f;
+        public static final int record03=0x7f020010;
+        public static final int recordformenu=0x7f020011;
+        public static final int recordwithouticon03=0x7f020012;
+        public static final int whitetrash=0x7f020013;
     }
     public static final class id {
-        public static final int action_settings=0x7f080005;
         public static final int chronometer=0x7f080001;
-        public static final int flagButton=0x7f080003;
+        public static final int flagButton=0x7f080004;
         public static final int folder=0x7f080006;
+        public static final int folderPlayback=0x7f080008;
         public static final int imageButton1=0x7f080000;
         public static final int mic=0x7f080007;
-        public static final int mic1=0x7f080004;
-        public static final int share=0x7f080008;
+        public static final int mic1=0x7f080005;
+        public static final int share=0x7f080009;
         public static final int textView2=0x7f080002;
+        public static final int textView3=0x7f080003;
     }
     public static final class layout {
         public static final int activity_files_list=0x7f030000;
@@ -57,14 +70,15 @@ public final class R {
         public static final int Recording=0x7f050003;
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
-        public static final int flag=0x7f050009;
+        public static final int flag=0x7f05000a;
         public static final int hello_world=0x7f050002;
         public static final int mic=0x7f050005;
-        public static final int play=0x7f050008;
-        public static final int start=0x7f050006;
-        public static final int stop=0x7f050007;
-        public static final int title_activity_files_list=0x7f05000b;
-        public static final int title_activity_playback=0x7f05000a;
+        public static final int play=0x7f050009;
+        public static final int share=0x7f050006;
+        public static final int start=0x7f050007;
+        public static final int stop=0x7f050008;
+        public static final int title_activity_files_list=0x7f05000c;
+        public static final int title_activity_playback=0x7f05000b;
     }
     public static final class style {
         /** 

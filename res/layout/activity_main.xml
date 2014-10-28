@@ -15,9 +15,9 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerHorizontal="true"
-      android:layout_marginTop="37dp"
+      android:layout_marginTop="85dp"
       android:scaleType="fitXY"
-      android:src="@drawable/record03"
+      android:src="@drawable/newrecord"
       android:background="@android:color/transparent"
       android:onClick="startOrStop" />
    
@@ -26,18 +26,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp"
-        android:textSize="50sp"
+        android:layout_marginTop="178dp"
+        android:textSize="75sp"
         android:text="Chronometer" />
    <TextView
       android:id="@+id/textView2"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
 	  android:layout_below="@+id/imageButton1"
-      android:layout_marginTop="10dp"
+      android:layout_marginTop="30dp"
       android:layout_centerInParent="true"
       android:text="@string/Recording"
-      android:textAppearance="?android:attr/textAppearanceMedium" />
+      android:textAppearance="?android:attr/textAppearanceMedium" 
+      android:textColor="#A1A1A1"
+      android:textSize="30dp"
+      android:textStyle="bold"/>
+   <TextView
+      android:id="@+id/textView3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+	  android:layout_below="@+id/textView2"
+      android:layout_centerInParent="true"
+      android:text=""
+      android:textAppearance="?android:attr/textAppearanceMedium" 
+      android:textColor="#A1A1A1"
+      android:textSize="30dp"
+      android:textStyle="bold"/>
 <!--    <Button
       android:id="@+id/button1"
       android:layout_width="wrap_content"
@@ -63,9 +77,10 @@
        android:id="@+id/flagButton"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_below="@id/textView2"
+       android:layout_below="@id/textView3"
        android:layout_centerInParent="true"
        android:src="@drawable/littlerecord07"
+       android:layout_marginTop="120sp"
        android:background="@android:color/transparent"
        android:onClick="flag"
        android:text="@string/flag" />

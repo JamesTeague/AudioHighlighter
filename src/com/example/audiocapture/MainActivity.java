@@ -42,22 +42,26 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	private String fileFlags;
 	private ImageButton flag;
 	private long StartTime = 0;
+	private long Threshold = 0;
 	private long EndTime = 0;
 	private long TotalTime = 0;
 	private ArrayList<Long> FlagAbTimes;
 	private ArrayList<Integer> FlagRelTimes;
 	private ArrayList<String> ListofFileNames;
 	private Chronometer myChronometer;
-	private int flagCount = 0;
 	private TextView lastFlag;
+	private TextView lastFlagTime;
 	private ImageView record;
 	private BufferedWriter bw;
 	private BufferedWriter fw;
 	private BufferedReader fr;
 	private boolean recording;
+	private boolean exists = (new File(listFiles)).exists();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		setTitle("Quote Bite");
+		getActionBar().setIcon(R.drawable.quoteformenu);
 		FlagAbTimes = new ArrayList<Long>();
 		FlagRelTimes = new ArrayList<Integer>();
 		ListofFileNames = new ArrayList<String>();
@@ -73,6 +77,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		flag.setImageResource(R.drawable.littlerecord07);
 		flag.setVisibility(View.INVISIBLE);
 		lastFlag = ((TextView)findViewById(R.id.textView2));
+		lastFlagTime =((TextView)findViewById(R.id.textView3));
 //		nextBtn.setEnabled(false);
 		outputFile = Environment.getExternalStorageDirectory().
 				getAbsolutePath() + "/myrecording.3gp";
@@ -84,6 +89,19 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		myChronometer = (Chronometer)findViewById(R.id.chronometer);
 		myChronometer.setVisibility(View.INVISIBLE);
+		if(!exists){
+			AlertDialog.Builder alertDialog  = new AlertDialog.Builder(MainActivity.this);
+			alertDialog.setTitle("What are Bites?!");
+			alertDialog.setMessage("Tap the Bite button to capture an important qoute!"
+					+ " It will mark 5 seconds of audio before you tap, so you never miss anything good."
+					+ " Tap away: You can catch as many QuoteBites in a recording as you'd like.");
+			alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+				//do nothing
+				}
+			});
+			alertDialog.show();
+		}
 		try {
 			readInFilesforNoob();
 		} catch (IOException e) {
@@ -120,8 +138,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	 * @param view
 	 */
 	public void start(View view){
-		record.setImageResource(R.drawable.recordwithouticon03);
+		record.setImageResource(R.drawable.presstostop);
 		flag.setVisibility(View.VISIBLE);
+		lastFlag.setText("");
 		try {
 			if(myAudioRecorder == null){
 				//create new recorder object
@@ -143,6 +162,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 			recording = true;
 			//Grab Start Time
 			StartTime = System.currentTimeMillis();
+			Threshold = StartTime + 5000;
 			Log.v("Time Elements", Long.toString(StartTime));
 		} catch (IllegalStateException e) {
 			// catch error that we called a method on an illegal state
@@ -175,7 +195,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 				//stop recording
 				myChronometer.stop();
 				myChronometer.setVisibility(View.INVISIBLE);
-				record.setImageResource(R.drawable.record03);
+				record.setImageResource(R.drawable.newrecord);
 				myAudioRecorder.stop();
 				flag.setVisibility(View.INVISIBLE);
 				recording = false;
@@ -236,19 +256,19 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	 * @param view
 	 */
 	public void flag(View view){
-		flagCount++;
-		int relativeTime;
-		//grab system time
-		FlagAbTimes.add(System.currentTimeMillis());
-		//alert user flag is done
-		Toast.makeText(getApplicationContext(), "Flagged! " + flagCount, 
-				Toast.LENGTH_LONG).show();
-		//scale time to be in correct position in recording
-		relativeTime = (int)(FlagAbTimes.get(FlagAbTimes.size()-1) - StartTime);	
-		lastFlag.setText("Last bite was at " + DateUtils.formatElapsedTime(relativeTime/1000));
-		//store times away
-		
-		FlagRelTimes.add(relativeTime);
+		if(System.currentTimeMillis() > Threshold){
+			int relativeTime;
+			//grab system time
+			
+			FlagAbTimes.add(System.currentTimeMillis()-5000);
+			//scale time to be in correct position in recording
+			relativeTime = (int)(FlagAbTimes.get(FlagAbTimes.size()-1) - StartTime);	
+			lastFlag.setText("LAST BITE AT");
+			lastFlagTime.setText(DateUtils.formatElapsedTime(relativeTime/1000));
+			//store times away
+			
+			FlagRelTimes.add(relativeTime);
+		}
 	}
 	/**
 	 * renames the audio file and creates corresponding txt file
@@ -313,10 +333,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		else if(id == R.id.folder){
+		 if(id == R.id.folder && !recording){
 			goToFiles(item.getActionView());
 		}
 		return super.onOptionsItemSelected(item);

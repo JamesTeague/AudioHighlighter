@@ -19,6 +19,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.ShareActionProvider;
@@ -37,6 +39,7 @@ public class Playback extends Activity {
 	String filename; //holds name of 3gp
 	String timestampsFile; //holds name of txt (flag file)
 	private ArrayList<Integer> FlagRelTimes;
+	private String basicFileName;
 	private MediaPlayer m;
 	//needed to read files
 	private BufferedReader br;
@@ -45,9 +48,12 @@ public class Playback extends Activity {
 	private ShareActionProvider mShareActionProvider;
 	private SeekBar seekBar;
 	private Handler mHandler;
+	private String rfilename;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		setTitle("Quote Bite");
+		getActionBar().setIcon(R.drawable.quoteformenu);
 		super.onCreate(savedInstanceState);
 		Bundle b = new Bundle();
 		m = new MediaPlayer();
@@ -55,7 +61,9 @@ public class Playback extends Activity {
 		//		setContentView(R.layout.activity_playback);
 		b = getIntent().getExtras();
 		//path names of files
+		basicFileName = b.getString("basicFileName");
 		filename = b.getString("fileName");
+		rfilename = filename;
 		//give proper extensions
 		timestampsFile = filename+".txt";
 		//reuse of variable to new pathname
@@ -71,36 +79,72 @@ public class Playback extends Activity {
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
+	public void goToFiles(View view){
+		Intent intent = new Intent(this, Files_list.class);
+		intent.putExtra("fileName", Environment.getExternalStorageDirectory().
+				getAbsolutePath() + "/"+ rfilename + ".3gp");
+
+		intent.putExtra("flagFile", Environment.getExternalStorageDirectory().
+				getAbsolutePath() + "/"+ rfilename + ".txt" );
+		intent.putExtra("listOfFiles", rfilename);
+		startActivity(intent);
+	}
+
 	private void loadActivity() throws IOException{
 		ScrollView sv = new ScrollView(this);
+		LinearLayout myBaseLayout = new LinearLayout(this);
+		myBaseLayout.setOrientation(LinearLayout.VERTICAL);
+		myBaseLayout.setBackgroundResource(R.drawable.emptybackground);
+		myBaseLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		sv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		final LinearLayout linLayout = new LinearLayout(this);
 		// specifying vertical orientation
 		linLayout.setOrientation(LinearLayout.VERTICAL);
 		// creating LayoutParams  
 		LayoutParams linLayoutParam = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT); 
+		linLayoutParam.setMargins(0, 0, 0, 20);
 		// set LinearLayout as a root element of the screen 
-		//setContentView(linLayout, linLayoutParam);
-		setContentView(sv);
-		sv.addView(linLayout);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+		setContentView(myBaseLayout);
+		RelativeLayout.LayoutParams lpText = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		lpText.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		mHandler = new Handler();
 		seekBar = new SeekBar(this);
 		seekBar.setMax(m.getDuration());
 		int x = m.getDuration() - m.getDuration();
 		seekBar.setProgress(x);
 		mHandler.postDelayed(run, 1000);
-		Button play = new Button(this);
-		Button flag = new Button(this);
+		ImageButton play = new ImageButton(this);
+		ImageButton flag = new ImageButton(this);
+		Button myFileName = new Button(this);
+		myFileName.setText(basicFileName.toUpperCase());
+		myFileName.setBackgroundColor(Color.TRANSPARENT);
+		myFileName.setTextSize(40);
+		myBaseLayout.addView(myFileName);
 		pause_resume = new ImageButton(this);
-		pause_resume.setImageResource(R.drawable.greenpauseforplayback03);
+		pause_resume.setImageResource(R.drawable.pause_03);
 		pause_resume.setBackgroundColor(Color.TRANSPARENT);
-		play.setText("Play");
-		flag.setText("Flag");
-		linLayout.addView(seekBar);
-		linLayout.addView(flag);
-		linLayout.addView(play);
-		linLayout.addView(pause_resume,linLayoutParam);
-		pause_resume.setEnabled(false);
+		RelativeLayout horizLayout = new RelativeLayout(this);
+		LinearLayout myInnerbuttons = new LinearLayout(this);
+		play.setImageResource(R.drawable.play_03);
+		play.setBackgroundColor(Color.TRANSPARENT);
+		flag.setImageResource(R.drawable.quote_03);
+		flag.setBackgroundColor(Color.TRANSPARENT);
+		myBaseLayout.addView(seekBar);
+		myInnerbuttons.addView(flag);
+		myInnerbuttons.addView(play);
+		myInnerbuttons.addView(pause_resume);
+		horizLayout.addView(myInnerbuttons, lp);
+		myBaseLayout.addView(horizLayout);
+		Button mybiteText = new Button(this);
+		mybiteText.setBackgroundColor(Color.TRANSPARENT);
+		mybiteText.setText("BITES:");
+		mybiteText.setTextSize(25);
+		myBaseLayout.addView(mybiteText, lpText);;
+		myBaseLayout.addView(sv);
+		sv.addView(linLayout);
+//		pause_resume.setEnabled(false);
 		Collections.sort(FlagRelTimes);
 		writeOutFlags(FlagRelTimes);
 		flag.setOnClickListener(new View.OnClickListener() {
@@ -109,8 +153,8 @@ public class Playback extends Activity {
 				FlagRelTimes.add(m.getCurrentPosition());
 				try {
 					loadActivity();
-					pause_resume.setEnabled(true);
-//					pause_resume.setText("Pause");
+//					pause_resume.setEnabled(true);
+					// pause_resume.setText("Pause");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -148,24 +192,43 @@ public class Playback extends Activity {
 				}
 			}
 		});;
-		LayoutParams lpView = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		LayoutParams lpView = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		lpView.setMargins(0, 0, 0, 20);
 		for( int i=0; i<FlagRelTimes.size(); i++)
 		{
-			final LinearLayout horLayout = new LinearLayout(this);
-			horLayout.setOrientation(LinearLayout.HORIZONTAL);
-			Button btn = new Button(this);
-			Button delete = new Button(this);
+			final LinearLayout myFlagButtons = new LinearLayout(this);
+			myFlagButtons.setOrientation(LinearLayout.HORIZONTAL);
+			final RelativeLayout horLayout = new RelativeLayout(this);
+			horLayout.setBackgroundResource(R.drawable.file_button_03);
+			RelativeLayout.LayoutParams lpRightRule = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			lpRightRule.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			ImageButton btn = new ImageButton(this);
+			Button myText= new Button(this);
+			ImageButton delete = new ImageButton(this);
 			delete.setId(FlagRelTimes.get(i)+1);
 			final int deleteid_ = delete.getId();
-			delete.setText("Delete");
 			btn.setId(FlagRelTimes.get(i));
 			final int id_ = btn.getId();
-			btn.setText("Flag " + DateUtils.formatElapsedTime(id_/1000));
-			horLayout.addView(btn);
-			horLayout.addView(delete);
-			linLayout.addView(horLayout, lpView);
-			delete = ((Button)findViewById(deleteid_));
+			myText.setText(DateUtils.formatElapsedTime(id_/1000));
+			myText.setBackgroundColor(Color.TRANSPARENT);
+			myText.setTextSize(25);
+			LinearLayout myInnerLayout = new LinearLayout(this);
+			btn.setBackgroundResource(R.drawable.play_bite);
+			btn.setImageResource(R.drawable.play_bite);
+			btn.setBackgroundColor(Color.TRANSPARENT);
+			delete.setImageResource(R.drawable.whitetrash);
+			delete.setBackgroundColor(Color.TRANSPARENT);
+			RelativeLayout.LayoutParams lpLeftRule = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			lpLeftRule.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
+			myInnerLayout.addView(myText);
+			//myInnerLayout.setGravity(Gravity.CENTER_VERTICAL);
+			myFlagButtons.addView(btn, lp);
+			myFlagButtons.addView(delete);
+			horLayout.addView(myInnerLayout);
+			horLayout.addView(myFlagButtons, lpRightRule);
+			linLayout.addView(horLayout, lpView);
+			delete = ((ImageButton)findViewById(deleteid_));
 			delete.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -191,7 +254,7 @@ public class Playback extends Activity {
 					alertDialog.show();
 				}
 			});
-			btn = ((Button) findViewById(id_));
+			btn = ((ImageButton) findViewById(id_));
 			btn.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {  
 					m.reset();
@@ -220,11 +283,11 @@ public class Playback extends Activity {
 					}
 					m.start();
 					m.seekTo(id_);
-					Toast.makeText(getApplicationContext(), "Playing audio from flag ", 
+					Toast.makeText(getApplicationContext(), "Playing audio from " + DateUtils.formatElapsedTime(id_/1000), 
 							Toast.LENGTH_LONG).show();
-					pause_resume.setEnabled(true);
+//					pause_resume.setEnabled(true);
 					//TODO set pause back
-//					pause_resume.setText("Pause");
+					// pause_resume.setText("Pause");
 				}
 			});
 		}
@@ -275,6 +338,7 @@ public class Playback extends Activity {
 		mShareActionProvider = (ShareActionProvider) menu.findItem(R.id.share).getActionProvider();
 		//Setting a share intent
 		mShareActionProvider.setShareIntent(getDefaultShareIntent());
+
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -284,11 +348,11 @@ public class Playback extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		else if (id == R.id.mic){
+		if (id == R.id.mic){
 			goToPlayback(item.getActionView());
+		}
+		if(id == R.id.folder){
+			goToFiles(item.getActionView());
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -296,48 +360,37 @@ public class Playback extends Activity {
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("audio/3gpp");
 		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + filename));
-		intent.putExtra(Intent.EXTRA_SUBJECT, filename);
+		intent.putExtra(Intent.EXTRA_SUBJECT, rfilename);
 		//startActivity(Intent.createChooser(intent, "Share sound"));
 		return intent;
 	}
 
 	public void play(View view) throws IllegalArgumentException,   
 	SecurityException, IllegalStateException, IOException{
-		m.reset();
-		if(m.isPlaying()){
-			m.stop();	
-		}else{
-			m.setDataSource(filename);
+		if(!m.isPlaying()){
+			int mCurrentPosition= m.getCurrentPosition();			
+			seekBar.setProgress(mCurrentPosition);
+			m.start();
+			m.seekTo(mCurrentPosition);
+			//TODO Set back to Pause
+			//				pause_resume.setText("Pause");
+			Toast.makeText(getApplicationContext(), "Playing audio from paused spot", 
+					Toast.LENGTH_LONG).show();
+			
 		}
-		seekBar.setProgress(0);
-		m.prepare();
-		m.start();
-		m.seekTo(0);
-		Toast.makeText(getApplicationContext(), "Playing audio from beginning", 
-				Toast.LENGTH_LONG).show();
-		pause_resume.setEnabled(true);
-		//TODO set back to pause image
-//		pause_resume.setText("Pause");
 	}
 	public void pause(View view) throws IllegalArgumentException,   
 	SecurityException, IllegalStateException, IOException{
-			//TODO set back to Resume
-//			pause_resume.setText("Resume");
-			if(m.isPlaying()){
-				m.pause();
-				Toast.makeText(getApplicationContext(), "Paused audio", 
-						Toast.LENGTH_LONG).show();
-			}
-			else{
-				int mCurrentPosition= m.getCurrentPosition();			
-				seekBar.setProgress(mCurrentPosition);
-				m.start();
-				m.seekTo(mCurrentPosition);
-				//TODO Set back to Pause
-//				pause_resume.setText("Pause");
-				Toast.makeText(getApplicationContext(), "Playing audio from paused spot", 
-						Toast.LENGTH_LONG).show();
-			}
+		//TODO set back to Resume
+		//			pause_resume.setText("Resume");
+		if(m.isPlaying()){
+			m.pause();
+			Toast.makeText(getApplicationContext(), "Paused audio", 
+					Toast.LENGTH_LONG).show();
+		}
+		else{
+			
+		}
 	}
 	Runnable run = new Runnable() {
 		@Override public void run() {
@@ -350,7 +403,7 @@ public class Playback extends Activity {
 			int x = m.getDuration() - m.getDuration();
 			seekBar.setMax(m.getDuration());
 			if (m.getCurrentPosition() == m.getDuration()) {
-				pause_resume.setEnabled(false);
+//				pause_resume.setEnabled(false);
 				seekBar.setProgress(x);
 			}
 			seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -365,6 +418,41 @@ public class Playback extends Activity {
 
 				@Override
 				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+					try {
+						m.setDataSource(filename);
+					} catch (IllegalArgumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SecurityException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						m.prepare();
+					} catch (IllegalStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					seekBar.setProgress(progress);
+					m.start();
+					m.seekTo(progress);
+
+					if (!m.isPlaying()) {
+						int x = m.getDuration() - m.getDuration();
+						seekBar.setProgress(x);
+						m.stop();
+					}
+
+
 				}
 			});
 		}
