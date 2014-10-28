@@ -196,6 +196,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 				myChronometer.stop();
 				myChronometer.setVisibility(View.INVISIBLE);
 				record.setImageResource(R.drawable.newrecord);
+				lastFlagTime.setText("");
 				myAudioRecorder.stop();
 				flag.setVisibility(View.INVISIBLE);
 				recording = false;
