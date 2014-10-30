@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="edu.drake.QuoteBite.MainActivity"
             android:label="@string/app_name" 
             android:screenOrientation="portrait"
             android:clearTaskOnLaunch="true">
@@ -28,13 +28,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Playback"
+            android:name="edu.drake.QuoteBite.Playback"
             android:label="@string/title_activity_playback"
             android:screenOrientation="portrait" 
             android:clearTaskOnLaunch="true">
         </activity>
         <activity
-            android:name=".Files_list"
+            android:name="edu.drake.QuoteBite.Files_list"
             android:label="@string/title_activity_files_list" 
             android:screenOrientation="portrait"
             android:clearTaskOnLaunch="true">
