@@ -205,6 +205,7 @@ public class Playback extends Activity {
 		});;
 		LayoutParams lpView = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		lpView.setMargins(0, 0, 0, 20);
+		//Dynamically create the elements of the scroll view
 		for( int i=0; i<FlagRelTimes.size(); i++)
 		{
 			final LinearLayout myFlagButtons = new LinearLayout(this);
@@ -242,6 +243,7 @@ public class Playback extends Activity {
 			horLayout.addView(myInnerLayout);
 			horLayout.addView(myFlagButtons, lpRightRule);
 			linLayout.addView(horLayout, lpView);
+			//set delete click
 			delete = ((ImageButton)findViewById(deleteid_));
 			delete.setOnClickListener(new View.OnClickListener() {
 				@Override
