@@ -42,7 +42,7 @@ public class Playback extends Activity {
 	//needed to read files
 	private BufferedReader br;
 	private BufferedWriter bw;
-	private ImageButton pause_resume;
+	private ImageButton pause;
 	private ShareActionProvider mShareActionProvider;
 	private SeekBar seekBar;
 	private Handler mHandler;
@@ -50,13 +50,13 @@ public class Playback extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setTitle("QuoteBite");
-		getActionBar().setIcon(R.drawable.quoteformenu);
+		setTitle("QuoteBite"); //app name
+		getActionBar().setIcon(R.drawable.quoteformenu); //menu icon
 		super.onCreate(savedInstanceState);
 		Bundle b = new Bundle();
 		m = new MediaPlayer();
 		FlagRelTimes = new ArrayList<Integer>();
-		//		setContentView(R.layout.activity_playback);
+		//setContentView(R.layout.activity_playback);
 		b = getIntent().getExtras();
 		//path names of files
 		basicFileName = b.getString("basicFileName");
@@ -73,19 +73,26 @@ public class Playback extends Activity {
 			e.printStackTrace();
 		}
 	}
-	public void goToPlayback(View view){
+	
+	//go to recording page
+	public void goToRecording(View view){
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
+	
+	//go to files page
 	public void goToFiles(View view){
 		Intent intent = new Intent(this, Files_list.class);
 		startActivity(intent);
 	}
 
 	private void loadActivity() throws IOException{
+		//new scroll view
 		ScrollView sv = new ScrollView(this);
 		LinearLayout myBaseLayout = new LinearLayout(this);
+		// specifying vertical orientation
 		myBaseLayout.setOrientation(LinearLayout.VERTICAL);
+		//background image
 		myBaseLayout.setBackgroundResource(R.drawable.emptybackground);
 		myBaseLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		sv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
@@ -103,30 +110,38 @@ public class Playback extends Activity {
 		lpText.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		mHandler = new Handler();
 		seekBar = new SeekBar(this);
+		//seekBar length set to duration of audio
 		seekBar.setMax(m.getDuration());
 		int x = m.getDuration() - m.getDuration();
+		//starts seekBar at the beginning
 		seekBar.setProgress(x);
+		//runs runnable every second
 		mHandler.postDelayed(run, 1000);
 		ImageButton play = new ImageButton(this);
 		ImageButton flag = new ImageButton(this);
 		Button myFileName = new Button(this);
+		//displays file name
 		myFileName.setText(basicFileName.toUpperCase());
 		myFileName.setBackgroundColor(Color.TRANSPARENT);
 		myFileName.setTextSize(40);
 		myBaseLayout.addView(myFileName);
-		pause_resume = new ImageButton(this);
-		pause_resume.setImageResource(R.drawable.pause_03);
-		pause_resume.setBackgroundColor(Color.TRANSPARENT);
+		pause = new ImageButton(this);
+		//pause button
+		pause.setImageResource(R.drawable.pause_03);
+		pause.setBackgroundColor(Color.TRANSPARENT);
 		RelativeLayout horizLayout = new RelativeLayout(this);
 		LinearLayout myInnerbuttons = new LinearLayout(this);
+		//play button
 		play.setImageResource(R.drawable.play_03);
 		play.setBackgroundColor(Color.TRANSPARENT);
+		//bite button
 		flag.setImageResource(R.drawable.quote_03);
 		flag.setBackgroundColor(Color.TRANSPARENT);
+		//add views
 		myBaseLayout.addView(seekBar);
 		myInnerbuttons.addView(flag);
 		myInnerbuttons.addView(play);
-		myInnerbuttons.addView(pause_resume);
+		myInnerbuttons.addView(pause);
 		horizLayout.addView(myInnerbuttons, lp);
 		myBaseLayout.addView(horizLayout);
 		Button mybiteText = new Button(this);
@@ -136,13 +151,15 @@ public class Playback extends Activity {
 		myBaseLayout.addView(mybiteText, lpText);;
 		myBaseLayout.addView(sv);
 		sv.addView(linLayout);
-//		pause_resume.setEnabled(false);
 		Collections.sort(FlagRelTimes);
 		writeOutFlags(FlagRelTimes);
+		
 		flag.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				//does not allow user to flag before 15 seconds
 				if(m.getCurrentPosition() > 15000 && m.isPlaying()){
+					//subtracts 15 seconds from time user flagged
 					FlagRelTimes.add(m.getCurrentPosition()-15000);
 					try {
 						loadActivity();
@@ -152,6 +169,7 @@ public class Playback extends Activity {
 				}
 			}
 		});
+		
 		play.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -168,7 +186,8 @@ public class Playback extends Activity {
 				}
 			}
 		});
-		pause_resume.setOnClickListener(new View.OnClickListener() {
+		
+		pause.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				try {
@@ -197,6 +216,7 @@ public class Playback extends Activity {
 			ImageButton btn = new ImageButton(this);
 			Button myText= new Button(this);
 			ImageButton delete = new ImageButton(this);
+			//deletes a flag
 			delete.setId(FlagRelTimes.get(i)+1);
 			final int deleteid_ = delete.getId();
 			btn.setId(FlagRelTimes.get(i));
@@ -205,13 +225,16 @@ public class Playback extends Activity {
 			myText.setBackgroundColor(Color.TRANSPARENT);
 			myText.setTextSize(25);
 			LinearLayout myInnerLayout = new LinearLayout(this);
+			//play button for flags
 			btn.setBackgroundResource(R.drawable.play_bite);
 			btn.setImageResource(R.drawable.play_bite);
 			btn.setBackgroundColor(Color.TRANSPARENT);
+			//trash can for flags
 			delete.setImageResource(R.drawable.whitetrash);
 			delete.setBackgroundColor(Color.TRANSPARENT);
 			RelativeLayout.LayoutParams lpLeftRule = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			lpLeftRule.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			//add views
 			myInnerLayout.addView(myText);
 			//myInnerLayout.setGravity(Gravity.CENTER_VERTICAL);
 			myFlagButtons.addView(btn, lp);
@@ -223,6 +246,7 @@ public class Playback extends Activity {
 			delete.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					//deleting flag pop up
 					AlertDialog.Builder alertDialog  = new AlertDialog.Builder(Playback.this);
 					alertDialog.setTitle("Delete Flag?");
 					alertDialog.setMessage("Are you sure you want to delete this flag?");
@@ -231,6 +255,7 @@ public class Playback extends Activity {
 							//do nothing
 						}
 					});
+					//deletes flag
 					alertDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							linLayout.removeView(horLayout);
@@ -278,8 +303,8 @@ public class Playback extends Activity {
 			});
 		}
 	}
-	/**
-	 * readInFlags
+	
+	/* readInFlags
 	 * read in flags from text file
 	 * @throws IOException
 	 */
@@ -294,8 +319,8 @@ public class Playback extends Activity {
 		br.close();
 		br = null;
 	}
-	/**
-	 * writeOutFlags
+	
+	/* writeOutFlags
 	 * Write out all flags to txt
 	 * @param flags - ArrayList that holds timestamps (flags)
 	 * 				  to be written
@@ -323,36 +348,43 @@ public class Playback extends Activity {
 		mShareActionProvider = (ShareActionProvider) menu.findItem(R.id.share).getActionProvider();
 		//Setting a share intent
 		mShareActionProvider.setShareIntent(getDefaultShareIntent());
-
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	//menu items
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
+		//sends to recording screen
 		if (id == R.id.mic){
-			goToPlayback(item.getActionView());
+			goToRecording(item.getActionView());
 		}
+		//sends to files page
 		if(id == R.id.folderPlayback){
 			goToFiles(item.getActionView());
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	//shares audio (sends to email, dropbox, google play, etc.)
 	private Intent getDefaultShareIntent(){
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("audio/3gpp");
 		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + filename));
+		//subject line is title of the file
 		intent.putExtra(Intent.EXTRA_SUBJECT, basicFileName.toUpperCase());
 		//startActivity(Intent.createChooser(intent, "Share sound"));
 		return intent;
 	}
 
+	//plays audio from beginning or resumes when paused
 	public void play(View view) throws IllegalArgumentException,   
 	SecurityException, IllegalStateException, IOException{
 		int x = m.getDuration() - m.getDuration();
+		//plays audio from beginning
 		if(seekBar.getProgress() == x) {
 			m.setDataSource(filename);
 			m.prepare();
@@ -360,6 +392,7 @@ public class Playback extends Activity {
 			m.start();
 			m.seekTo(x);
 		}
+		//plays audio when paused
 		if(!m.isPlaying()){
 			int mCurrentPosition= m.getCurrentPosition();			
 			seekBar.setProgress(mCurrentPosition);
@@ -367,25 +400,32 @@ public class Playback extends Activity {
 			m.seekTo(mCurrentPosition);			
 		}
 	}
+	
+	//pauses audio
 	public void pause(View view) throws IllegalArgumentException,   
 	SecurityException, IllegalStateException, IOException{
 		if(m.isPlaying()){
 			m.pause();
 		}
 	}
+	
 	Runnable run = new Runnable() {
 		@Override public void run() {
+			//sets seekBar at position of audio
 			if(m.isPlaying()){
 				int mCurrentPosition = m.getCurrentPosition();
 				seekBar.setProgress(mCurrentPosition);
 			}
+			//calls ever second
 			mHandler.postDelayed(this, 1000);
-
 			int x = m.getDuration() - m.getDuration();
+			//sets length of seekBar to duration of audio
 			seekBar.setMax(m.getDuration());
+			//sets seekBar back to the beginning when it gets to the end
 			if (m.getCurrentPosition() == m.getDuration()) {
 				seekBar.setProgress(x);
 			}
+			//handles user action from seekBar 
 			seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
 				@Override
@@ -396,6 +436,7 @@ public class Playback extends Activity {
 				public void onStartTrackingTouch(SeekBar seekBar) {
 				}
 
+				//handles activity for when seekBar is dragged by user
 				@Override
 				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 					try {

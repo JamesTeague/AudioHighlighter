@@ -59,25 +59,20 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setTitle("QuoteBite");
-		getActionBar().setIcon(R.drawable.quoteformenu);
+		setTitle("QuoteBite"); //app name
+		getActionBar().setIcon(R.drawable.quoteformenu); //menu icon
 		FlagAbTimes = new ArrayList<Long>();
 		FlagRelTimes = new ArrayList<Integer>();
 		ListofFileNames = new ArrayList<String>();
 		recording = false;
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-//		start = (Button)findViewById(R.id.button1);
-//		stop = (Button)findViewById(R.id.button2);
 		flag = (ImageButton)findViewById(R.id.flagButton);
-//		nextBtn = (Button)findViewById(R.id.Next);
 		record = (ImageView)findViewById(R.id.imageButton1);
-//		stop.setEnabled(false);
-		flag.setImageResource(R.drawable.quotebite);
+		flag.setImageResource(R.drawable.quotebite); //bit button
 		flag.setVisibility(View.INVISIBLE);
 		lastFlag = ((TextView)findViewById(R.id.textView2));
 		lastFlagTime =((TextView)findViewById(R.id.textView3));
-//		nextBtn.setEnabled(false);
 		outputFile = Environment.getExternalStorageDirectory().
 				getAbsolutePath() + "/myrecording.3gp";
 		myAudioRecorder = new MediaRecorder();
@@ -88,6 +83,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		myChronometer = (Chronometer)findViewById(R.id.chronometer);
 		myChronometer.setVisibility(View.INVISIBLE);
+		//pop up for first time opening app
 		if(!exists){
 			AlertDialog.Builder alertDialog  = new AlertDialog.Builder(MainActivity.this);
 			alertDialog.setTitle("What are Bites?!");
@@ -105,18 +101,15 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		myChronometer.stop();
-//		myChronometer.setBase(SystemClock.elapsedRealtime());
-//		myChronometer.setText("00:00");
-		
-
-
 	}
+	
+	//goes to files page
 	public void goToFiles(View view){
 		Intent intent = new Intent(this, Files_list.class);
 		myChronometer.stop();
 		startActivity(intent);
 	}
+	
 	public void startOrStop (View view) throws IllegalArgumentException, 
 	SecurityException, IllegalStateException, IOException{
 		if(recording){
@@ -125,10 +118,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 			start(view);
 		}	
 	}
-	/**
-	 * Start recording
-	 * @param view
-	 */
+	
 	public void start(View view){
 		record.setImageResource(R.drawable.presstostop);
 		flag.setVisibility(View.VISIBLE);
@@ -154,6 +144,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 			recording = true;
 			//Grab Start Time
 			StartTime = System.currentTimeMillis();
+			//does not allow user to flag before 15 seconds
 			Threshold = StartTime + 15000;
 			Log.v("Time Elements", Long.toString(StartTime));
 		} catch (IllegalStateException e) {
@@ -163,12 +154,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 			// catch problem with file
 			e.printStackTrace();
 		}
-		//started recording cannot start twice
-//		start.setEnabled(false);
-		//allow stop and flags
-//		stop.setEnabled(true);
 		flag.setEnabled(true);
 	}
+	
 	public void stop(View view) throws IllegalArgumentException,
 	SecurityException, IllegalStateException, IOException{
 		//ask if you really want to stop
@@ -190,7 +178,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 				myAudioRecorder.stop();
 				flag.setVisibility(View.INVISIBLE);
 				recording = false;
-				//Grab End Time
+				//grab end time
 				EndTime = System.currentTimeMillis();
 				//total length of recording in seconds
 				TotalTime = (EndTime - StartTime)/1000;
@@ -201,19 +189,16 @@ public class MainActivity extends Activity implements View.OnClickListener{
 				myAudioRecorder  = null;
 				//disable flag
 				flag.setEnabled(false);
-				//allow new recording
-				//m.setDataSource(outputFile);
 
 				AlertDialog.Builder alertDialog  = new AlertDialog.Builder(MainActivity.this);
 				//ask what user wants to name file
 				alertDialog.setTitle("Edit File Name");
 				alertDialog.setMessage("What is the name of this recording?");
+				//file name
 				final EditText input = new EditText(MainActivity.this);
 				alertDialog.setView(input);
 				alertDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-
-						Context context = getApplicationContext();
 						String fileName = input.getText().toString();
 						try {
 							//store all the information needed with files
@@ -230,30 +215,25 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		alertDialog.show();
 	}
 
-	/**
-	 * Grabs system time, and calculates the flag time
-	 * relative to the length of the recording
-	 * after you have reached flag limit disables button
-	 * @param view
-	 */
+	 /*grabs system time, and calculates the flag time
+	  * relative to the length of the recording after you
+	  * have reached flag limit disables button
+	  */
 	public void flag(View view){
 		if(System.currentTimeMillis() > Threshold){
 			int relativeTime;
-			//grab system time
-			
+			//grab system time and subtracts 15 seconds
 			FlagAbTimes.add(System.currentTimeMillis()-15000);
 			//scale time to be in correct position in recording
 			relativeTime = (int)(FlagAbTimes.get(FlagAbTimes.size()-1) - StartTime);	
 			lastFlag.setText("LAST BITE AT");
 			lastFlagTime.setText(DateUtils.formatElapsedTime(relativeTime/1000));
 			//store times away
-			
 			FlagRelTimes.add(relativeTime);
 		}
 	}
-	/**
-	 * renames the audio file and creates corresponding txt file
-	 * @param filename - desired filename
+	/* renames the audio file and creates corresponding
+	 * txt file @param filename - desired filename
 	 * @throws IOException
 	 */
 	public void save(String filename) throws IOException{
@@ -292,9 +272,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 			ListofFileNames.add(fline);	
 		}
 		if(ListofFileNames.size() < 1){
-			//TODO: Show pop up
 		}
-//		Log.v("Time Elements", ListofFileNames.toString());
 		//close all streams
 		fr.close();
 		//release objects
@@ -310,9 +288,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
+		/* Handle action bar item clicks here. The action bar will
+		 * automatically handle clicks on the Home/Up button, so long
+		 * as you specify a parent activity in AndroidManifest.xml.
+		 */
 		int id = item.getItemId();
 		 if(id == R.id.folder && !recording){
 			goToFiles(item.getActionView());
@@ -323,7 +302,4 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	public void onClick(View v) {
 
 	}
-
-
-
 }

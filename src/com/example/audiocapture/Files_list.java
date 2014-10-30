@@ -33,14 +33,14 @@ public class Files_list extends Activity {
 	private ArrayList<String> ListofFileNames;
 	private BufferedReader fr;
 	private BufferedWriter fw;
+	//gets path of file
 	final private String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/files.txt";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setTitle("QuoteBite");
-		getActionBar().setIcon(R.drawable.quoteformenu);
+		setTitle("QuoteBite"); //app name
+		getActionBar().setIcon(R.drawable.quoteformenu); //menu icon
 		super.onCreate(savedInstanceState);
-		
 		ListofFileNames = new ArrayList<String>();
 		try {
 			readInFiles();
@@ -50,17 +50,17 @@ public class Files_list extends Activity {
 		loadActivity();
 	}
 
-	/**
-	 * loadActivity
+	/* loadActivity
 	 * Dynamically create the layout of page 
 	 * after finding file names
 	 */
 	private void loadActivity(){
-		//make new scrollView
+		//make new linearLayout
 		LinearLayout BaseLayout = new LinearLayout(this);
 		BaseLayout.setOrientation(LinearLayout.VERTICAL);
 		BaseLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		BaseLayout.setBackgroundResource(R.drawable.emptybackground);
+		//make new scrollView
 		ScrollView sv = new ScrollView(this);
 		Button myFilesTitle = new Button(this);
 		myFilesTitle.setBackgroundColor(Color.TRANSPARENT);
@@ -71,12 +71,8 @@ public class Files_list extends Activity {
 		BaseLayout.addView(myFilesTitle, lpLeftRule);
 		sv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		LinearLayout linLayout = new LinearLayout(this);
-		// specifying vertical orientation
+		//specifying vertical orientation
 		linLayout.setOrientation(LinearLayout.VERTICAL);
-		// creating LayoutParams  
-		// LayoutParams linLayoutParam = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT); 
-		// set LinearLayout as a root element of the screen 
-		//setContentView(linLayout, linLayoutParam);
 		setContentView(BaseLayout);
 		BaseLayout.addView(sv);
 		sv.addView(linLayout);
@@ -86,22 +82,24 @@ public class Files_list extends Activity {
 		{
 			//create button, set id, and set the text
 			final RelativeLayout horLayout = new RelativeLayout(this);
-			//horLayout.setOrientation(LinearLayout.HORIZONTAL);
 			RelativeLayout.LayoutParams lpRightRule = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			lpRightRule.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 			horLayout.setBackgroundResource(R.drawable.file_button_03);
 			Button btn = new Button(this);
 			ImageButton delete = new ImageButton(this);
 			btn.setId(i);
+			//width of button to take you to playback screen
 			btn.setWidth(R.layout.activity_files_list - 50);
 			btn.setGravity(Gravity.START);;
 			delete.setId(i*1000);
+			//delete icon
 			delete.setImageResource(R.drawable.whitetrash);
 			delete.setBackgroundColor(Color.TRANSPARENT);
 			final int deleteid_ = delete.getId();
 			btn.setText(ListofFileNames.get(i-1).toUpperCase());
 			btn.setBackgroundColor(Color.TRANSPARENT);
 			final String fileName = ListofFileNames.get(i-1);
+			//add views
 			horLayout.addView(btn);
 			horLayout.addView(delete, lpRightRule);
 			linLayout.addView(horLayout, lpView);
@@ -109,6 +107,7 @@ public class Files_list extends Activity {
 			delete.setOnClickListener(new View.OnClickListener()
 			{
 				public void onClick(View view){
+					//deleting file pop up
 					AlertDialog.Builder alertDialog  = new AlertDialog.Builder(Files_list.this);
 					alertDialog.setTitle("Delete File?");
 					alertDialog.setMessage("Are you sure you want to delete this file?");
@@ -117,6 +116,7 @@ public class Files_list extends Activity {
 							//do nothing
 						}
 					});
+					//deletes file
 					alertDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							System.out.println(Environment.getExternalStorageDirectory().getAbsolutePath()
@@ -152,12 +152,13 @@ public class Files_list extends Activity {
 			});
 		}
 	}
+	
 	public void goToRecording(View view){
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
-	/**
-	 * readInFiles
+	
+	/* readInFiles
 	 * Will read in file names from the specified .txt file
 	 * and insert those files into a global ArrayList
 	 * @throws IOException
@@ -171,15 +172,13 @@ public class Files_list extends Activity {
 			//add filenames to the ArrayList
 			ListofFileNames.add(fline);	
 		}
-		//		Log.v("Time Elements", ListofFileNames.toString());
 		//close all streams
 		fr.close();
 		//release objects
 		fr = null;
 	}
 
-	/**
-	 * writeOutFiles
+	/* writeOutFiles
 	 * specified to overwrite the files list in the case of deletion
 	 * @param lof - ArrayList that will be made to Rewrite collection of Files
 	 * @throws IOException
@@ -192,9 +191,8 @@ public class Files_list extends Activity {
 			fw.write(fname);
 			fw.write("\n");
 		}
-		//Close streams
+		//close streams
 		fw.close();
-
 		//release objects
 		fw = null;
 	}
@@ -208,9 +206,10 @@ public class Files_list extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
+		/* Handle action bar item clicks here. The action bar will
+		 * automatically handle clicks on the Home/Up button, so long
+		 * as you specify a parent activity in AndroidManifest.xml.
+		 */
 		int id = item.getItemId();
 		if(id == R.id.mic1){
 			goToRecording(item.getActionView());
