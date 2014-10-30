@@ -41,6 +41,7 @@ public class Files_list extends Activity {
 		setTitle("QuoteBite"); //app name
 		getActionBar().setIcon(R.drawable.quoteformenu); //menu icon
 		super.onCreate(savedInstanceState);
+		//Arraylist to hold the file names that will appear on the page
 		ListofFileNames = new ArrayList<String>();
 		try {
 			readInFiles();
@@ -52,15 +53,16 @@ public class Files_list extends Activity {
 
 	/* loadActivity
 	 * Dynamically create the layout of page 
-	 * after finding file names
+	 * after finding file names.
+	 * Will be recalled after the user deletes a file. 
 	 */
 	private void loadActivity(){
-		//make new linearLayout
+		//make new linearLayout, and set parameters
 		LinearLayout BaseLayout = new LinearLayout(this);
 		BaseLayout.setOrientation(LinearLayout.VERTICAL);
 		BaseLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		BaseLayout.setBackgroundResource(R.drawable.emptybackground);
-		//make new scrollView
+		//make new scrollView to handle more files than the page length
 		ScrollView sv = new ScrollView(this);
 		Button myFilesTitle = new Button(this);
 		myFilesTitle.setBackgroundColor(Color.TRANSPARENT);
@@ -77,7 +79,7 @@ public class Files_list extends Activity {
 		BaseLayout.addView(sv);
 		sv.addView(linLayout);
 		LayoutParams lpView = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		//loop through list of file names
+		//loop through list of file names to dynamically create the file names and buttons
 		for( int i=1; i<=ListofFileNames.size(); i++)
 		{
 			//create button, set id, and set the text
@@ -99,11 +101,12 @@ public class Files_list extends Activity {
 			btn.setText(ListofFileNames.get(i-1).toUpperCase());
 			btn.setBackgroundColor(Color.TRANSPARENT);
 			final String fileName = ListofFileNames.get(i-1);
-			//add views
+			//add views to the scroll view
 			horLayout.addView(btn);
 			horLayout.addView(delete, lpRightRule);
 			linLayout.addView(horLayout, lpView);
 			delete = ((ImageButton)findViewById(deleteid_));
+			//Set the delete on click listener to accomodate clicks of dynamic buttons
 			delete.setOnClickListener(new View.OnClickListener()
 			{
 				public void onClick(View view){
@@ -116,7 +119,7 @@ public class Files_list extends Activity {
 							//do nothing
 						}
 					});
-					//deletes file
+					//deletes file after confirmation
 					alertDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							System.out.println(Environment.getExternalStorageDirectory().getAbsolutePath()
@@ -152,7 +155,7 @@ public class Files_list extends Activity {
 			});
 		}
 	}
-	
+	//Go to recording button
 	public void goToRecording(View view){
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
