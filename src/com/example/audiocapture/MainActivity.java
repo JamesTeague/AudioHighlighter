@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements View.OnClickListener{
+	//Declare private global variables
 	private MediaRecorder myAudioRecorder;
 	private String outputFile = null;
 	private String listFiles = Environment.getExternalStorageDirectory().getAbsolutePath() + "/files.txt";
@@ -57,6 +58,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	private boolean recording;
 	private boolean exists = (new File(listFiles)).exists();
 
+	//Method called to create the page 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setTitle("QuoteBite"); //app name
@@ -73,8 +75,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		flag.setVisibility(View.INVISIBLE);
 		lastFlag = ((TextView)findViewById(R.id.textView2));
 		lastFlagTime =((TextView)findViewById(R.id.textView3));
+		//Set an output file to a predetermined location
 		outputFile = Environment.getExternalStorageDirectory().
 				getAbsolutePath() + "/myrecording.3gp";
+				//create a new mediarecorder
 		myAudioRecorder = new MediaRecorder();
 		myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -109,7 +113,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		myChronometer.stop();
 		startActivity(intent);
 	}
-	
+	//start/stop button
 	public void startOrStop (View view) throws IllegalArgumentException, 
 	SecurityException, IllegalStateException, IOException{
 		if(recording){
@@ -119,6 +123,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		}	
 	}
 	
+	//start button
 	public void start(View view){
 		record.setImageResource(R.drawable.presstostop);
 		flag.setVisibility(View.VISIBLE);
@@ -156,7 +161,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		}
 		flag.setEnabled(true);
 	}
-	
+	//Stop button
 	public void stop(View view) throws IllegalArgumentException,
 	SecurityException, IllegalStateException, IOException{
 		//ask if you really want to stop
